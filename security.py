@@ -98,8 +98,8 @@ class Security():
 
 # ------ TEST ---------------------------------------
 
-cl = Security()
-print(cl.sha256('test'))
+# cl = Security()
+# print(cl.sha256('test'))
 
 # from Crypto.PublicKey import ECC
 

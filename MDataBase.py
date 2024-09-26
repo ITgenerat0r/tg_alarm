@@ -235,4 +235,4 @@ class Alarm_database(Database):
         self._commit(f"update sessions set aes_key = '{aes_key}' where id = {session_id}")
 
 
-        
+    def set_login(self, session_id, login):

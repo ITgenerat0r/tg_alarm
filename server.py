@@ -4,8 +4,10 @@ from sys import argv
 from time import sleep
 import subprocess
 from subprocess import PIPE
+import telebot
 from includes import *
 from controller import Controller
+from security import Security
 from thread import Threads
 
 from data_split_class import LData
@@ -17,6 +19,7 @@ version = "1.0"
 HOST = '0.0.0.0'  # Standard loopback interface address (localhost)
 PORT = 11201      # Port to listen on (non-privileged ports are > 1023)
 
+token = Config.MyToken
 
 
 logs = True
@@ -46,6 +49,8 @@ DB_timeout = 2147483
 
 ths = Threads()
 db = Alarm_database(Config.host, Config.user, Config.password, Config.db_name)
+sc = Security()
+bot = telebot.TeleBot(token)
 
 
 def db_connect():
@@ -72,7 +77,7 @@ def handler(conn, addr):
 
 		if data[:2] == "ns":
 			# iv = cn.get_new_iv()
-			privkey, pubkey = cn.get_new_ecc_keys()
+			privkey, pubkey = sc.generate_ecies_key()
 			session_id = db.new_session(aes_key=privkey)
 			cn.send(f"{session_id} {pubkey}")
 		elif data.find(' ') >= 0:
@@ -81,24 +86,26 @@ def handler(conn, addr):
 			en_data = sp.get(1)
 			session = db.get_session(session_id)
 			print(session)
-			iv = session['iv']
+			iv = session['aes_iv']
 			aes_key = session['aes_key']
-			if iv == "" or iv == "None":
-				rx = cn.ecc_decrypt(aes_key, en_data)
+			if iv == "" or iv == None:
+				rx = sc.ecies_decrypt(aes_key, en_data)
 				rx_data = LData(rx)
 				login = rx_data.get(0)
-				iv = rx_data.get(1)[-32:]
+				iv = rx_data.get(1)
 				sha256 = rx_data.get(2)
 				res = "failed"
 				if db.login(login, sha256):
 					# ok
-					db.set_iv(iv)
-					db.set_aes_key(sha256)
+					# set login here
+					db.set_iv(session_id, iv)
+					db.set_aes_key(session_id, sha256)
 					res = "success"
 				else:
 					# bad
 					db.delete_session(session_id)
 				tx = sc.encrypt(res, sha256, iv)
+				db.set_iv(session_id, tx[-32:])
 				cn.send(tx)
 			else:
 				data = sc.decrypt(en_data, aes_key, iv)
@@ -111,7 +118,11 @@ def handler(conn, addr):
 
 
 				# do something with data or ldata
-
+				print(yellow_text(f"DATA: {data}"))
+				try:
+					bot.send_message(758517761, f"DATA: {data}")
+				except Exception as e:
+					print("Failed to send data!")
 				
 
 				# if ldata.get(0) == "drop":

@@ -86,13 +86,13 @@ class Controller():
 
 
 	# it's returned: privKey, pubKey
-	def get_new_ecc_keys(self):
-		return self.__cipher.generate_ecies_key()
+	# def get_new_ecc_keys(self):
+	# 	return self.__cipher.generate_ecies_key()
 
-	def ecc_decrypt(self, key, data):
-		return self.__cipher.ecies_decrypt(key, data)
+	# def ecc_decrypt(self, key, data):
+	# 	return self.__cipher.ecies_decrypt(key, data)
 
-	def ecc_encrypt(self, key, data):
-		return self.__cipher.ecies_encrypt(key, data)
+	# def ecc_encrypt(self, key, data):
+	# 	return self.__cipher.ecies_encrypt(key, data)
 
 
