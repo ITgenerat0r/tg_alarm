@@ -29,21 +29,25 @@ def prt(text=""):
 		print(text)
 
 for i in argv:
-	if i == "-log":
-		try:
-			os.system('cls')
-			os.system('clear')
-		except Exception as e:
-			pass
-		print("Log enabled")
-		logs = True
-		print(f"Version {version}")
-
+	if i[0] == '-':
+		last_arg = i
+		if i == "-log":
+			try:
+				os.system('cls')
+				os.system('clear')
+			except Exception as e:
+				pass
+			print("Log enabled")
+			logs = True
+			print(f"Version {version}")
+	else:
+		if last_arg == "-port":
+			PORT = i
 
 
 #define
 GOOD_RESPONSE = b"OK"
-help_list = ["drop", "test"]
+help_list = ["test"]
 DB_timeout = 2147483
 
 
