@@ -28,6 +28,8 @@ def prt(text=""):
 	if logs:
 		print(text)
 
+last_arg = ""
+
 for i in argv:
 	if i[0] == '-':
 		last_arg = i
