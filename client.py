@@ -13,7 +13,7 @@ from parser import Parser
 import subprocess
 import getpass
 
-# client -u <login> -n <name(who sended data)> -f <input_file> -ip <ip> -port <port>
+help_data = "client -u <login> -name <name(who sended data)> -f <input_file> -ip <ip> -port <port>"
 
 users = {}
 
@@ -47,6 +47,9 @@ for i in argv:
 		if i == "-log":
 			print("Log enabled")
 			logs = True
+		elif i == "-help":
+			print(f"Version {VERSION}")
+			print(help_data)
 	else:
 		if last_arg == "-u":
 			pwd = getpass.getpass(f"Password for user {i}: ")
