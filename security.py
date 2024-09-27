@@ -1,4 +1,4 @@
-import base64
+# import base64
 import hashlib
 # pip install pycryptodome
 from Crypto.Cipher import AES
@@ -6,7 +6,10 @@ from Crypto import Random
 
 
 # ECIES
-import ecies
+# import ecies
+from ecies import decrypt as eciesdecrypt
+from ecies import encrypt as eciesencrypt
+from ecies.utils import generate_eth_key
 
 
 
@@ -99,17 +102,18 @@ class Security():
 
 	# ECIES
 	def generate_ecies_key(self):
-		priv_key = ecies.utils.generate_eth_key()
+		# priv_key = ecies.utils.generate_eth_key()
+		priv_key = generate_eth_key()
 		priv_key_hex = priv_key.to_hex()
 		pub_key_hex = priv_key.public_key.to_hex()
 		return priv_key_hex, pub_key_hex
 
 	def ecies_encrypt(self, key, data):
-		return self.bytes2hexstr(ecies.encrypt(key, data.encode('utf-8')))
+		return self.bytes2hexstr(eciesencrypt(key, data.encode('utf-8')))
 
 
 	def ecies_decrypt(self, key, data):
-		return ecies.decrypt(key, self.hexstr2bytes(data)).decode('utf-8')
+		return eciesdecrypt(key, self.hexstr2bytes(data)).decode('utf-8')
 
 	# -----
 

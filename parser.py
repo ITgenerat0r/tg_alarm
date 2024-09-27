@@ -63,13 +63,19 @@ class Parser():
 		f = open(filename, 'r', encoding="UTF-8")
 		key = True
 		for line in f:
+			line = line.strip()
+			print(f"line: {line}")
 			if self.__last_warning == "" or line == self.__last_warning:
 				key = False
+				self.__last_warning = line
+				continue
 			if key:
 				continue
+			print("check")
 			self.__last_warning = line
 			if line.find("Предупреждение:") >= 0:
 				res += line
+				print("add")
 				# ind = line.find(" : ")
 				# if ind > 0:
 				# 	time = line[:ind].strip()
@@ -79,6 +85,7 @@ class Parser():
 				# else:
 				# 	self.__prt("Wrong line!")
 		f.close()
+		print(f"res: {res}")
 		return res.strip()
 
 

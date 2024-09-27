@@ -1,5 +1,5 @@
 import socket
-import requests
+# import requests
 import os
 import sys
 from sys import argv
@@ -10,7 +10,7 @@ from controller import Controller
 from security import Security
 from parser import Parser
 # from daemon import *
-import subprocess
+# import subprocess
 import getpass
 
 help_data = "client -u <login> -name <name(who sended data)> -f <input_file> -ip <ip> -port <port>"
@@ -96,10 +96,9 @@ p = Parser()
 
 bot_running = True
 while bot_running:
-	# sleep(10)
 	# PARSING
-	data = f"{station_name}: \n"
-	data += p.parse_file(filename)
+	# data = f"{station_name}: \n"
+	data = p.parse_file(filename)
 
 
 
@@ -108,42 +107,44 @@ while bot_running:
 	# rc = req('ns')
 
 
-	
-	for login in users:
-		passwd = users[login]
+	if data:
+		for login in users:
+			passwd = users[login]
 
-		rx = req('ns')
+			rx = req('ns')
 
-		rx_data = LData(rx)
-		session_id = rx_data.get(0)
-		pubkey = rx_data.get(1)
+			rx_data = LData(rx)
+			session_id = rx_data.get(0)
+			pubkey = rx_data.get(1)
 
-		iv = sc.new_iv()
-		sha256 = sc.sha256(passwd)
-		tx_data = f"{login} {iv} {sha256}"
-		tx = sc.ecies_encrypt(pubkey, tx_data)
-
-		rx_en = req(f"{session_id} {tx}")
-
-		rx = sc.decrypt(rx_en, sha256, iv)
-		rx_data = LData(rx)
-		if rx_data.get(0) == "success":
-			# send data
-			prt(f"Authentication was successful ({login})!")
-			tx = sc.encrypt(data, sha256, rx_en[-32:])
-			iv = tx[-32:]
+			iv = sc.new_iv()
+			sha256 = sc.sha256(passwd)
+			tx_data = f"{login} {iv} {sha256}"
+			tx = sc.ecies_encrypt(pubkey, tx_data)
 
 			rx_en = req(f"{session_id} {tx}")
 
 			rx = sc.decrypt(rx_en, sha256, iv)
-			if rx == "ok":
-				prt(f"Data sended ({login})!")
-				# good, data sended
-		else:
-			prt(f"Authentication failed ({login})!")
+			rx_data = LData(rx)
+			if rx_data.get(0) == "success":
+				# send data
+				prt(f"Authentication was successful ({login})!")
+				tx = sc.encrypt(f"{station_name}: \n{data}", sha256, rx_en[-32:])
+				iv = tx[-32:]
+
+				rx_en = req(f"{session_id} {tx}")
+
+				rx = sc.decrypt(rx_en, sha256, iv)
+				if rx == "ok":
+					prt(f"Data sended ({login})!")
+					# good, data sended
+			else:
+				prt(f"Authentication failed ({login})!")
 
 
-	bot_running = False # dev, remove for release
+
+	sleep(10)
+	# bot_running = False # dev, remove for release
 	DELAY_MAIN = 1
 
 
