@@ -13,12 +13,12 @@ from parser import Parser
 import subprocess
 import getpass
 
-# client -u <login> -f <input_file> -ip <ip> -port <port>
+# client -u <login> -n <name(who sended data)> -f <input_file> -ip <ip> -port <port>
 
 users = {}
 
 filename = "test.txt"
-
+station_name = "default"
 
 
 
@@ -57,6 +57,8 @@ for i in argv:
 			HOST = i
 		elif last_arg == "-port":
 			PORT = i
+		elif last_arg == "-name":
+			station_name = i
 
 
 	
@@ -84,7 +86,7 @@ help_list = ['drop', 'test', 'info']
 
 last_rc = ""
 
-sc = Security()
+sc = Security(True)
 p = Parser()
 
 
@@ -92,8 +94,8 @@ bot_running = True
 while bot_running:
 	# sleep(10)
 	# PARSING
-	data = p.parse_file(filename)
-	# data = "some parsed data"
+	data = f"{station_name}: \n"
+	data += p.parse_file(filename)
 
 
 

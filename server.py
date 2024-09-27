@@ -98,6 +98,7 @@ def handler(conn, addr):
 				if db.login(login, sha256):
 					# ok
 					# set login here
+					db.set_login_to_session(session_id, login)
 					db.set_iv(session_id, iv)
 					db.set_aes_key(session_id, sha256)
 					res = "success"
@@ -115,12 +116,14 @@ def handler(conn, addr):
 				db.set_iv(session_id, tx_en[-32:])
 				if not ldata.get_size():
 					return
+				chat = session['user_id']
 
 
 				# do something with data or ldata
-				print(yellow_text(f"DATA: {data}"))
+				print(yellow_text(f"{data}"))
 				try:
-					bot.send_message(758517761, f"DATA: {data}")
+					if chat:
+						bot.send_message(chat, f"From {data}")
 				except Exception as e:
 					print("Failed to send data!")
 				

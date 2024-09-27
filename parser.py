@@ -79,7 +79,7 @@ class Parser():
 				# else:
 				# 	self.__prt("Wrong line!")
 		f.close()
-		return res
+		return res.strip()
 
 
 

@@ -5,6 +5,8 @@ from threads import Threads
 from includes import *
 import Config
 import sys
+from MDataBase import Alarm_database
+from security import Security
 
 
 # DB = MDataBase.Database("localhost", "root", Config.password, Config.bd_name)
@@ -33,6 +35,8 @@ bot = telebot.TeleBot(token)
 print('threads init...')
 thr = Threads()
 
+db = Alarm_database(Config.host, Config.user, Config.password, Config.db_name)
+
 update_state = True
 
 black_list = []
@@ -47,8 +51,10 @@ def start_bot():
         global last_err_time
         print(yellow_text(get_time()), "Starting...")
         last_err_time = datetime.datetime.now()
-        # DB.connect()
-        # DB.set_time_out(DB_timeout)
+        global db
+        global DB_timeout
+        db.connect()
+        db.set_time_out(DB_timeout)
         print(yellow_text(get_time()), "Runned.")
         bot.polling(none_stop=False, timeout=1)
     except Exception as e:
@@ -147,30 +153,55 @@ def send_message_to_user(message):
 @bot.message_handler(commands=['start'])
 def start(message):
     #bot.send_message(message.chat.id, '<b>Привет!</b>', parse_mode='html')
-    bot.send_message(message.chat.id, f"Hello, your chat id: {message.chat.id}")
+    u = db.get_user(message.chat.id)
+    if u:
+        common(message)
+    else:
+        bot.send_message(message.chat.id, f"Здравствуйте, {message.from_user.first_name} {message.from_user.last_name}!")
+        get_login(message)
 
-    # if new user: check in db
-    new_pass(message)
+@bot.message_handler(commands=['get_login'])
+def get_login(message):
+    bot.send_message(message.chat.id, f"Ваш логин: {message.chat.id}")
+    u = db.get_user(message.chat.id)
+    if u:
+        db.set_user_name(message.chat.id, f"{message.from_user.first_name} {message.from_user.last_name}")
+    else:
+        new_pass(message)
+
 
 @bot.message_handler(commands=['new_pass'])
 def new_pass(message):
-	bot.send_message(message.chat.id, f"New password:")
+	bot.send_message(message.chat.id, f"Придумайте новый пароль:")
 	bot.register_next_step_handler(message, set_pass)
 
 def set_pass(message):
 	# set pass
+    sc = Security()
+    login = message.chat.id
+    pwd = message.text
+    sha256 = sc.sha256(pwd)
+    name = f"{message.from_user.first_name} {message.from_user.last_name}"
+
+    
+    if db.get_user(message.chat.id):
+        db.set_user_password(login, sha256)
+        db.set_user_name(login, name)
+    else:
+        db.add_user(login, sha256, name)
     bot.send_message(message.chat.id, f"Done!")
 
 
 @bot.message_handler(content_types='text')
-def navigation(message):
+def common(message):
     if message.text == None:
         print(red_text("message.text == None"))
         return
     if len(message.text) > 100:
         bot.send_message(message.chat.id, "Слишком длинное сообщение!")
         return
-    bot.send_message(message.chat.id, f"Your id: {message.chat.id}")
+    bot.send_message(message.chat.id, f"Сам {message.text}")
+    # show help here)
     
 
 

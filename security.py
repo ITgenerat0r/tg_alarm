@@ -35,24 +35,43 @@ class Security():
 
 
 	def __pad(self, s):
-		return s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)
+		# print(f"len(s) = {len(s)}")
+		# print(f"+++ {(BLOCK_SIZE - len(s) % BLOCK_SIZE)} +++")
+		# print(f"+++{chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)}+++")
+		# l = (BLOCK_SIZE - len(s) % BLOCK_SIZE) -1
+		# return s + l * '0' + hex(l)[2:]
+
+		return s + ((BLOCK_SIZE - len(s) % BLOCK_SIZE) * chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)).encode('utf-8')
 
 
 	def __unpad(self, s):
+		# l = int(s[len(s) - 1:], 16) + 1
+		# print(f"L: {l}")
+
+		# return s[: -int(s[len(s) - 1:], 16)-1]
+
 		return s[: -ord(s[len(s) - 1 :])]
 
 
 	def encrypt(self, plain_text, key, iv):
 		if self.__logs:
 			print("ENCRYPT")
-			print(f"plain_text: {plain_text}")
-			print(f"key: {key}")
-			print(f"iv: {iv}")
+			print("----------------------------")
+			print(f"plain_text({len(plain_text)}): '{plain_text}'")
+			print("----------------------------")
+			print(f"key({len(key)}): {key}")
+			print(f"iv({len(iv)}): {iv}")
 		# private_key = hashlib.sha256(key.encode("utf-8")).digest()
-		private_key = self.hexstr2bytes(key)
-		plain_text = self.__pad(plain_text)
-		cipher = AES.new(private_key, AES.MODE_CBC, self.hexstr2bytes(iv))
-		enc_data = cipher.encrypt(plain_text.encode('utf-8'))
+		# plain_text = self.__pad(plain_text)
+		if self.__logs:
+			print("----------------------------")
+			print(f"padded plain_text({len(plain_text)}): '{plain_text}'")
+			print("----------------------------")
+		cipher = AES.new(self.hexstr2bytes(key), AES.MODE_CBC, self.hexstr2bytes(iv))
+		p_text = self.__pad(plain_text.encode('utf-8'))
+
+		print(f"p_text({len(p_text)})")
+		enc_data = cipher.encrypt(p_text)
 		return self.bytes2hexstr(enc_data)
 
 
@@ -64,8 +83,8 @@ class Security():
 			print(f"iv: {iv}")
 		cipher_text = self.hexstr2bytes(data)
 		# private_key = hashlib.sha256(key.encode("utf-8")).digest()
-		private_key = self.hexstr2bytes(key)
-		cipher = AES.new(private_key, AES.MODE_CBC, self.hexstr2bytes(iv))
+		# private_key = self.hexstr2bytes(key)
+		cipher = AES.new(self.hexstr2bytes(key), AES.MODE_CBC, self.hexstr2bytes(iv))
 		return bytes.decode(self.__unpad(cipher.decrypt(cipher_text)))
 
 
@@ -154,14 +173,15 @@ class Security():
 
 # AES
 
-# cp = Security()
-# message = "asdfasdf-0123456789abcef0123456789abcdef"
+# cp = Security(True)
+# # message = "asdfasdf-0123456789abcef0123456789abcdef"
+# message = "DATA: default: 1235215ffasdfasdfп"
 # # message = input("->")
 # key = cp.sha256("develop")
 # # iv = "c33bfeae1263c98633bc9e66c6ab8746"
 # iv = cp.new_iv()
 
-# print("Init text", message)
+# print(f"Init text({len(message)}): ", message)
 # encrypted_msg = cp.encrypt(message, key, iv)
 # print(f"Encrypted Message({len(encrypted_msg)}):", encrypted_msg)
 # decrypted_msg = cp.decrypt(encrypted_msg, key, iv)

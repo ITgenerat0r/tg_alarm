@@ -130,7 +130,7 @@ class Alarm_database(Database):
     def add_user(self, login, password, name):
         if login:
             columns = "u_login"
-            values = f"'{login}'"
+            values = f"{login}"
 
             columns += ", u_passhash"
             values += f", '{password}'"
@@ -146,11 +146,11 @@ class Alarm_database(Database):
             self._commit(f"update users set u_name = '{name}' where id = {id}")
 
     def set_user_login(self, id, login):
-        if name:
-            self._commit(f"update users set u_login = '{login}' where id = {id}")
+        if login:
+            self._commit(f"update users set u_login = {login} where id = {id}")
 
     def set_user_password(self, id, phash):
-        if name:
+        if phash:
             self._commit(f"update users set u_passhash = '{phash}' where id = {id}")
 
 
@@ -159,7 +159,7 @@ class Alarm_database(Database):
             self._commit(f"delete from users where id = {id}")
 
     def get_user(self, login):
-        r = self._fetchall(f"select * from users where u_login = '{login}'")
+        r = self._fetchall(f"select * from users where u_login = {login}")
         if r:
             return r[0]
         return {}
@@ -235,4 +235,5 @@ class Alarm_database(Database):
         self._commit(f"update sessions set aes_key = '{aes_key}' where id = {session_id}")
 
 
-    def set_login(self, session_id, login):
+    def set_login_to_session(self, session_id, login):
+        self._commit(f"update sessions set user_id = {login} where id = {session_id}")
