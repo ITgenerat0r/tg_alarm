@@ -2,3 +2,5 @@
 test.txt
 Config.py 
 __pycache__ 
+build
+dist

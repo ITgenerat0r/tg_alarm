@@ -1,8 +1,8 @@
 import socket
 import requests
 import os
+import sys
 from sys import argv
-from uuid import getnode as get_mac
 from time import sleep
 from includes import *
 from data_split_class import LData
@@ -50,6 +50,7 @@ for i in argv:
 		elif i == "-help":
 			print(f"Version {VERSION}")
 			print(help_data)
+			sys.exit()
 	else:
 		if last_arg == "-u":
 			pwd = getpass.getpass(f"Password for user {i}: ")
