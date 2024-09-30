@@ -241,22 +241,22 @@ class Security():
 
 # RSA
 
-# cl = Security()
-# key_len = 1024
-# priv_key, pub_key = cl.generate_rsa_keys(key_len)
-# print(f"Private key({len(priv_key)}): ", priv_key)
-# print(f"Public key({len(pub_key)}): ", pub_key)
+cl = Security(True)
+key_len = 2048
+priv_key, pub_key = cl.generate_rsa_keys(key_len)
+print(f"Private key({len(priv_key)}): ", priv_key)
+print(f"Public key({len(pub_key)}): ", pub_key)
 
-# data = "testing rsa"
-# print("init data: ", data)
+data = "testing rsa"
+print("init data: ", data)
 
-# #
-# en_data = cl.rsa_encrypt(data, pub_key)
-# print("Encrypted data:", en_data)
+#
+en_data = cl.rsa_encrypt(data, pub_key)
+print("Encrypted data:", en_data)
 
-# #
-# de_data = cl.rsa_decrypt(en_data, priv_key)
-# print("Decrypted data:", de_data)
+#
+de_data = cl.rsa_decrypt(en_data, priv_key)
+print("Decrypted data:", de_data)
 
 
 

@@ -18,7 +18,7 @@ CREATE TABLE sessions
     id int not null AUTO_INCREMENT,
     user_id int,
     aes_iv varchar(256),
-    aes_key varchar(256),
+    aes_key varchar(2410),
     date_last_conn datetime,
     CONSTRAINT PK_sessions PRIMARY KEY (id)
 );
