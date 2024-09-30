@@ -4,3 +4,4 @@ Config.py
 __pycache__ 
 build
 dist
+test.py 

@@ -26,6 +26,7 @@ HOST = '192.168.0.161'
 PORT = 11201  
 DELAY_MAIN = 1
 MAX_DELAY_MAIN = 60
+RSA_KEY_LENGTH = 2048
 
 VERSION = "1.0"
 
@@ -111,7 +112,8 @@ while bot_running:
 		for login in users:
 			passwd = users[login]
 
-			rx = req('ns')
+			rx = req(f'ns {RSA_KEY_LENGTH}')
+			sc.set_key_len(RSA_KEY_LENGTH)
 
 			rx_data = LData(rx)
 			session_id = rx_data.get(0)
@@ -120,7 +122,7 @@ while bot_running:
 			iv = sc.new_iv()
 			sha256 = sc.sha256(passwd)
 			tx_data = f"{login} {iv} {sha256}"
-			tx = sc.ecies_encrypt(pubkey, tx_data)
+			tx = sc.rsa_encrypt(tx_data, pubkey)
 
 			rx_en = req(f"{session_id} {tx}")
 

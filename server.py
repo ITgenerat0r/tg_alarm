@@ -83,7 +83,8 @@ def handler(conn, addr):
 
 		if data[:2] == "ns":
 			# iv = cn.get_new_iv()
-			privkey, pubkey = sc.generate_ecies_key()
+			sp = LData(data)
+			privkey, pubkey = sc.generate_rsa_keys(int(sp.get(1)))
 			session_id = db.new_session(aes_key=privkey)
 			cn.send(f"{session_id} {pubkey}")
 		elif data.find(' ') >= 0:
@@ -95,7 +96,7 @@ def handler(conn, addr):
 			iv = session['aes_iv']
 			aes_key = session['aes_key']
 			if iv == "" or iv == None:
-				rx = sc.ecies_decrypt(aes_key, en_data)
+				rx = sc.rsa_decrypt(en_data, aes_key)
 				rx_data = LData(rx)
 				login = rx_data.get(0)
 				iv = rx_data.get(1)
