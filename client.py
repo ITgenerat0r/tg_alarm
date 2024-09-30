@@ -28,7 +28,7 @@ DELAY_MAIN = 1
 MAX_DELAY_MAIN = 60
 RSA_KEY_LENGTH = 2048
 
-VERSION = "1.0"
+VERSION = "1.1"
 
 logs = True
 

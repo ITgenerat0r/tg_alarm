@@ -5,16 +5,18 @@ from time import sleep
 import subprocess
 from subprocess import PIPE
 import telebot
+
+
+
 from includes import *
 from controller import Controller
 from security import Security
 from thread import Threads
-
 from data_split_class import LData
 from MDataBase import Alarm_database
 import Config
 
-version = "1.0"
+version = "1.1"
 
 HOST = '0.0.0.0'  # Standard loopback interface address (localhost)
 PORT = 11201      # Port to listen on (non-privileged ports are > 1023)
@@ -27,6 +29,7 @@ logs = True
 def prt(text=""):
 	if logs:
 		print(text)
+
 
 last_arg = ""
 
@@ -104,7 +107,6 @@ def handler(conn, addr):
 				res = "failed"
 				if db.login(login, sha256):
 					# ok
-					# set login here
 					db.set_login_to_session(session_id, login)
 					db.set_iv(session_id, iv)
 					db.set_aes_key(session_id, sha256)
@@ -130,7 +132,17 @@ def handler(conn, addr):
 				print(yellow_text(f"{data}"))
 				try:
 					if chat:
-						bot.send_message(chat, f"From {data}")
+						if len(data) < 4096:
+							bot.send_message(chat, f"From {data}")
+						else:
+							# fix that
+							first = True
+							for ln in data.split('\n'):
+								add = "   "
+								if first:
+									add = "From "
+									first = False
+								bot.send_message(chat, f"{add}{ln}")
 				except Exception as e:
 					print("Failed to send data!")
 				

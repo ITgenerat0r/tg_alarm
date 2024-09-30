@@ -16,6 +16,8 @@ from security import Security
 # admins
 admins = Config.admins
 
+version = "1.0"
+
 
 DB_timeout = 2147483
 max_lives = 5000
@@ -189,7 +191,9 @@ def set_pass(message):
         db.set_user_name(login, name)
     else:
         db.add_user(login, sha256, name)
-    bot.send_message(message.chat.id, f"Done!")
+    # remove pass message
+    bot.delete_message(message.chat.id, message[-1].message_id)
+    bot.send_message(message.chat.id, f"Готово!")
 
 
 @bot.message_handler(content_types='text')
@@ -217,3 +221,6 @@ while True:
     live_countdown -= 1
 
 # print(yellow_text(get_time()), "END")
+
+
+
