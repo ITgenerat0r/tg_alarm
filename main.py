@@ -43,6 +43,7 @@ update_state = True
 
 black_list = []
 is_sending = []
+client_file_id = None
 
 last_err = ""
 
@@ -161,6 +162,7 @@ def start(message):
     else:
         bot.send_message(message.chat.id, f"Здравствуйте, {message.from_user.first_name} {message.from_user.last_name}!")
         get_login(message)
+        common(message)
 
 @bot.message_handler(commands=['get_login'])
 def get_login(message):
@@ -207,7 +209,13 @@ def common(message):
         return
     bot.send_message(message.chat.id, f"Сам {message.text}")
     # show help here)
-    
+
+    if client_file_id:
+        bot.send_document(message.chat.id, client_file_id)
+    else:
+        client_file_id = sendFileByRequest(message.chat.id, "client.exe", "", "client.exe")
+        print(f"Client file id: {client_file_id}")
+    bot.send_message(message.chat.id, f"Откройте терминал в папке c файлом client.exe.\nИспользуйте команду client -help для ознакомления.")
 
 
 
