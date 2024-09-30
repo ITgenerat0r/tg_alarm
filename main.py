@@ -192,7 +192,7 @@ def set_pass(message):
     else:
         db.add_user(login, sha256, name)
     # remove pass message
-    bot.delete_message(message.chat.id, message.message_id-1)
+    bot.delete_message(message.chat.id, message.message_id)
     bot.send_message(message.chat.id, f"Готово!")
 
 
