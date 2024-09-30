@@ -74,7 +74,7 @@ class Parser():
 			print("check")
 			self.__last_warning = line
 			if line.find("Предупреждение:") >= 0:
-				res += line
+				res += line + "\n"
 				print("add")
 				# ind = line.find(" : ")
 				# if ind > 0:
