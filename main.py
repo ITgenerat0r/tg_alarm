@@ -43,7 +43,7 @@ update_state = True
 
 black_list = []
 is_sending = []
-client_file_id = ""
+client_file_id = None
 
 last_err = ""
 
@@ -210,6 +210,7 @@ def common(message):
     bot.send_message(message.chat.id, f"Сам {message.text}")
     # show help here)
 
+    global client_file_id
     if client_file_id:
         bot.send_document(message.chat.id, client_file_id)
     else:
