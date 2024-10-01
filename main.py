@@ -207,7 +207,7 @@ def common(message):
     if len(message.text) > 100:
         bot.send_message(message.chat.id, "Слишком длинное сообщение!")
         return
-    bot.send_message(message.chat.id, f"Сам {message.text}")
+    # bot.send_message(message.chat.id, f"Сам {message.text}")
     # show help here)
 
     global client_file_id
@@ -216,7 +216,7 @@ def common(message):
     else:
         client_file_id = sendFileByRequest(token, message.chat.id, "client.exe", "", "client.exe")
         print(f"Client file id: {client_file_id}")
-    bot.send_message(message.chat.id, f"Откройте терминал в папке c файлом client.exe.\nИспользуйте команду client -help для ознакомления.")
+    bot.send_message(message.chat.id, f"Откройте терминал в папке c файлом client.exe.\nЧто бы посмотреть принимаемые параметры используйте команду client -help.")
 
 
 
