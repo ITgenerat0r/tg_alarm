@@ -40,10 +40,6 @@ elif platform == "win32":
 
 
 
-tk = "6649349048:AAGSYEnwMv1byuN5HbBFMOMMUKoZTfm_G48"
-rcid = 6989028963
-
-
 
 
 
@@ -85,7 +81,7 @@ def yellow_text(text):
 
 
 
-def sendFileByRequest(chat_id, fname, flocation, fnewname='document.png'):
+def sendFileByRequest(tk, chat_id, fname, flocation, fnewname='document.png'):
     fabsname = fname
     if flocation:
       fabsname = f"{flocation}/{fname}"

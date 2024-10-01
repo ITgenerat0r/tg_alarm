@@ -214,7 +214,7 @@ def common(message):
     if client_file_id:
         bot.send_document(message.chat.id, client_file_id)
     else:
-        client_file_id = sendFileByRequest(message.chat.id, "client.exe", "", "client.exe")
+        client_file_id = sendFileByRequest(token, message.chat.id, "client.exe", "", "client.exe")
         print(f"Client file id: {client_file_id}")
     bot.send_message(message.chat.id, f"Откройте терминал в папке c файлом client.exe.\nИспользуйте команду client -help для ознакомления.")
 
