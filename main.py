@@ -162,7 +162,6 @@ def start(message):
     else:
         bot.send_message(message.chat.id, f"Здравствуйте, {message.from_user.first_name} {message.from_user.last_name}!")
         get_login(message)
-        common(message)
 
 @bot.message_handler(commands=['get_login'])
 def get_login(message):
@@ -187,16 +186,18 @@ def set_pass(message):
     sha256 = sc.sha256(pwd)
     name = f"{message.from_user.first_name} {message.from_user.last_name}"
 
+    # remove pass message
+    bot.delete_message(message.chat.id, message.message_id)
+    bot.delete_message(message.chat.id, message.message_id-1)
+    bot.send_message(message.chat.id, f"Готово!")
+
     
     if db.get_user(message.chat.id):
         db.set_user_password(login, sha256)
         db.set_user_name(login, name)
     else:
         db.add_user(login, sha256, name)
-    # remove pass message
-    bot.delete_message(message.chat.id, message.message_id)
-    bot.delete_message(message.chat.id, message.message_id-1)
-    bot.send_message(message.chat.id, f"Готово!")
+        common(message)
 
 
 @bot.message_handler(content_types='text')
