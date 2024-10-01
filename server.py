@@ -149,6 +149,7 @@ def handler(conn, addr):
 								bot.send_message(chat, tx)
 				except Exception as e:
 					print("Failed to send data!")
+					print(f"Error: {e}")
 				
 
 				# if ldata.get(0) == "drop":
