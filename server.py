@@ -133,17 +133,20 @@ def handler(conn, addr):
 				try:
 					if chat:
 						if len(data) < 4096:
+							print("send all")
 							bot.send_message(chat, f"From {data}")
 						else:
+							print("send by parts")
 							data = "From " + data
-							while len(data):
+							while len(data) > 0:
+								print("len data:", len(data))
 								x = 4090
 								ind = data[:x].rfind('\n')
 								if ind >= 0:
 									x = ind
 								tx = data[:x]
 								data = data[x:]
-								bot.send_message(chat, data)
+								bot.send_message(chat, tx)
 				except Exception as e:
 					print("Failed to send data!")
 				
