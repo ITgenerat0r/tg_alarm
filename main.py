@@ -43,7 +43,7 @@ update_state = True
 
 black_list = []
 is_sending = []
-client_file_id = None
+client_file_id = ""
 
 last_err = ""
 
