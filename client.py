@@ -17,7 +17,7 @@ help_data = "client -u <login> -name <name(who sended data)> -f <input_file> -ip
 
 users = {}
 
-filename = "test.txt"
+filename = "logs.txt"
 station_name = "default"
 
 
@@ -28,7 +28,7 @@ DELAY_MAIN = 1
 MAX_DELAY_MAIN = 60
 RSA_KEY_LENGTH = 2048
 
-VERSION = "1.1"
+VERSION = "1.2"
 
 logs = True
 
