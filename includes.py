@@ -86,7 +86,9 @@ def yellow_text(text):
 
 
 def sendFileByRequest(chat_id, fname, flocation, fnewname='document.png'):
-    fabsname = f"{flocation}/{fname}"
+    fabsname = fname
+    if flocation:
+      fabsname = f"{flocation}/{fname}"
     document = open(fabsname, "rb")
     url = f"https://api.telegram.org/bot{tk}/sendDocument"
     response = requests.post(url, data={'chat_id': chat_id}, files={'document': (fnewname, document)})
