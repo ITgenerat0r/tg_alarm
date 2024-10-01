@@ -66,7 +66,7 @@ class Parser():
 		for line in f:
 			line = line.strip()
 			print(f"line: {line}")
-			if self.__last_warning == "" or line == self.__last_warning:
+			if self.__last_warning == "" or self.__last_warning == line:
 				key = False
 				self.__last_warning = line
 				continue
@@ -85,6 +85,8 @@ class Parser():
 				# 	res.append(f"{time} : {text}")
 				# else:
 				# 	self.__prt("Wrong line!")
+		if key:
+			self.__last_warning = ""
 		f.close()
 		print(f"res: {res}")
 		return res.strip()
