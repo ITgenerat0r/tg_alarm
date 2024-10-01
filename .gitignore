@@ -1,5 +1,6 @@
 *.spec 
 test.txt
+logs.txt
 Config.py 
 __pycache__ 
 build

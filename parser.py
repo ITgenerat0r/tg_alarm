@@ -58,10 +58,10 @@ class Parser():
 		return key
 
 
-	def parse_file(self, filename):
+	def parse_file(self, filename, enc="1251"):
 		# res = []
 		res = ""
-		f = open(filename, 'r', encoding="UTF-8")
+		f = open(filename, 'r', encoding=enc)
 		key = True
 		for line in f:
 			line = line.strip()
