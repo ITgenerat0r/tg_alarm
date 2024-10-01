@@ -211,6 +211,8 @@ def common(message):
     # bot.send_message(message.chat.id, f"Сам {message.text}")
     # show help here)
 
+    bot.send_message(message.chat.id, "Скачайте файл client.exe")
+
     global client_file_id
     if client_file_id:
         bot.send_document(message.chat.id, client_file_id)
