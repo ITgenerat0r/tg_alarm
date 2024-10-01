@@ -70,7 +70,7 @@ class Parser():
 				key = False
 				self.__last_warning = line
 				continue
-			if key:
+			if key or line == "":
 				continue
 			print("check")
 			self.__last_warning = line
