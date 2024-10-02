@@ -24,7 +24,7 @@ station_name = "default"
 
 HOST = '192.168.0.161'
 PORT = 11201  
-DELAY_MAIN = 1
+DELAY_MAIN = 60
 MAX_DELAY_MAIN = 60
 RSA_KEY_LENGTH = 2048
 
@@ -107,6 +107,8 @@ while bot_running:
 	# connecting
 	# rc = req('ns')
 
+	if not data:
+		data = "no data"
 
 	if data:
 		for login in users:
@@ -145,8 +147,7 @@ while bot_running:
 
 
 
-	sleep(10)
+	sleep(DELAY_MAIN)
 	# bot_running = False # dev, remove for release
-	DELAY_MAIN = 1
 
 
