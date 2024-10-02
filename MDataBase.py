@@ -2,7 +2,7 @@ import Config
 from includes import *
 import pymysql
 from uuid import uuid4
-from datetime import datetime
+from datetime import datetime, timedelta
 from shutil import copy
 
 
@@ -113,8 +113,9 @@ class Database:
         self.connection.close()
 
 
-    def get_current_time(self):
-        return datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+    def get_current_time(self, step=0):
+        # return datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+        return (datetime.now() + timedelta(seconds=step) ).strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
 
 
 
@@ -237,3 +238,40 @@ class Alarm_database(Database):
 
     def set_login_to_session(self, session_id, login):
         self._commit(f"update sessions set user_id = {login} where id = {session_id}")
+
+
+
+    def get_online(self, mac):
+        dt = self._fetchall(f"select * from online where mac = '{mac}'")
+        if dt:
+            return dt[0]
+        return {}
+
+    def set_online(self, mac):
+        time = self.get_current_time()
+        if self.get_online(mac):
+            self._commit(f"update online set date_last_conn = '{time}' where mac = '{mac}'")
+        else:
+            self._commit(f"insert into online (mac, date_last_conn) values ('{mac}', '{time}')")
+
+
+
+    def is_online(self, mac):
+        ONLINE_TIMEOUT = 300
+        o = self.get_online(mac)
+        if o:
+            l_tm = o['date_last_conn']
+            # change all
+            diff = 10
+            if diff < ONLINE_TIMEOUT:
+                return True
+        return False
+
+
+    def delete_online(self, mac):
+        self._commit(f"delete from online where mac = '{mac}'")
+
+
+
+
+

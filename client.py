@@ -13,6 +13,8 @@ from parser import Parser
 # import subprocess
 import getpass
 
+from uuid import getnode as get_mac
+
 help_data = "client -u <login> -name <name(who sended data)> -f <input_file> -ip <ip> -port <port>"
 
 users = {}
@@ -27,6 +29,7 @@ PORT = 11201
 DELAY_MAIN = 60
 MAX_DELAY_MAIN = 60
 RSA_KEY_LENGTH = 2048
+MAC = get_mac()
 
 VERSION = "1.2"
 
@@ -123,7 +126,7 @@ while bot_running:
 
 			iv = sc.new_iv()
 			sha256 = sc.sha256(passwd)
-			tx_data = f"{login} {iv} {sha256}"
+			tx_data = f"{login} {iv} {sha256} {MAC}"
 			tx = sc.rsa_encrypt(tx_data, pubkey)
 
 			rx_en = req(f"{session_id} {tx}")

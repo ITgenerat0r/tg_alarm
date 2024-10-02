@@ -24,5 +24,13 @@ CREATE TABLE sessions
 );
 
 
+CREATE TABLE online
+(
+    id int not null AUTO_INCREMENT,
+    mac varchar(128) not null unique,
+    date_last_conn datetime,
+    CONSTRAINT PK_online PRIMARY KEY (id)
+);
+
 
 

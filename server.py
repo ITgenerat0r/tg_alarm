@@ -104,6 +104,7 @@ def handler(conn, addr):
 				login = rx_data.get(0)
 				iv = rx_data.get(1)
 				sha256 = rx_data.get(2)
+				mac = rx_data.get(3)
 				res = "failed"
 				if db.login(login, sha256):
 					# ok
