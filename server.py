@@ -194,7 +194,7 @@ def handler(conn, addr):
 
 
 def offline_seeker():
-	DELAY_BETWEEN_CHECKING = 60
+	DELAY_BETWEEN_CHECKING = 300
 	global db
 	global bot
 	for device in db.get_offline():
