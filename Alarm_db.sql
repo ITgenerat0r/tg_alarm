@@ -16,7 +16,7 @@ CREATE TABLE users
 CREATE TABLE sessions
 (
     id int not null AUTO_INCREMENT,
-    user_id int,
+    user_id bigint,
     aes_iv varchar(256),
     aes_key varchar(2410),
     date_last_conn datetime,
@@ -27,9 +27,21 @@ CREATE TABLE sessions
 CREATE TABLE online
 (
     id int not null AUTO_INCREMENT,
-    mac varchar(128) not null unique,
+    mac varchar(32) not null unique,
+    short_name varchar(256),
     date_last_conn datetime,
     CONSTRAINT PK_online PRIMARY KEY (id)
+);
+
+
+
+
+CREATE TABLE o_u_bonds
+(
+    id int not null AUTO_INCREMENT,
+    mac varchar(32) not null,
+    user_id bigint not null,
+    CONSTRAINT PK_ou_bonds PRIMARY KEY (id)
 );
 
 

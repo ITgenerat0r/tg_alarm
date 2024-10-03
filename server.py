@@ -16,7 +16,7 @@ from data_split_class import LData
 from MDataBase import Alarm_database
 import Config
 
-version = "1.1"
+version = "1.2"
 
 HOST = '0.0.0.0'  # Standard loopback interface address (localhost)
 PORT = 11201      # Port to listen on (non-privileged ports are > 1023)
@@ -105,6 +105,8 @@ def handler(conn, addr):
 				iv = rx_data.get(1)
 				sha256 = rx_data.get(2)
 				mac = rx_data.get(3)
+				db.set_online(mac)
+				db.make_bond(mac, login)
 				res = "failed"
 				if db.login(login, sha256):
 					# ok
@@ -131,17 +133,22 @@ def handler(conn, addr):
 
 				# do something with data or ldata
 				print(yellow_text(f"{data}"))
+				s_ind = data.find(':')
+				sender = "Unknown"
+				if s_ind >= 0:
+					sender = data[:s_ind]
+					data = data[s_ind+2:].strip()
 				if data == "no data":
 					pass
 				else:
 					try:
 						if chat:
+							data = f"From {sender}: \n{data}"
 							if len(data) < 4096:
 								print("send all")
-								bot.send_message(chat, f"From {data}")
+								bot.send_message(chat, data)
 							else:
 								print("send by parts")
-								data = "From " + data
 								while len(data) > 0:
 									print("len data:", len(data))
 									x = 4090
@@ -186,6 +193,22 @@ def handler(conn, addr):
 
 
 
+def offline_seeker():
+	DELAY_BETWEEN_CHECKING = 60
+	global db
+	global bot
+	for device in db.get_offline():
+		mac = device['mac']
+		nm = device['short_name']
+		for u in db.get_bonds(mac):
+			login = u['user_id']
+			bot.send_message(login, f"Client [{mac}]({nm}) disconnected!")
+		db.delete_online(mac)
+
+	sleep(DELAY_BETWEEN_CHECKING)
+
+
+
 server_run = True
 db_run = True
 while server_run:
@@ -198,6 +221,13 @@ while server_run:
 				prt(f"DB error: {db_e}")
 				sleep(10)
 				db_run = True
+		prt()
+		prt("Run offline_seeker()...")
+		try:
+			ths.run(offline_seeker, ())
+		except Exception as e:
+			prt("Failed to run offline_seeker()!")
+			prt(f"Catching error: {e}")
 		prt()
 		prt("Listen...")
 		prt()

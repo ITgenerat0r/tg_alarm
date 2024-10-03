@@ -253,23 +253,46 @@ class Alarm_database(Database):
             self._commit(f"update online set date_last_conn = '{time}' where mac = '{mac}'")
         else:
             self._commit(f"insert into online (mac, date_last_conn) values ('{mac}', '{time}')")
+    
+    def set_online_name(self, mac, short_name):
+        if short_name and self.get_online(mac):
+            self._commit(f"update online set short_name = '{short_name}' where mac = '{mac}'")
 
 
 
     def is_online(self, mac):
         ONLINE_TIMEOUT = 300
-        o = self.get_online(mac)
+        time = self.get_current_time(-ONLINE_TIMEOUT)
+        o = self._fetchall(f"select * from online where mac = '{mac}' and date_last_conn >= '{time}'")
         if o:
-            l_tm = o['date_last_conn']
-            # change all
-            diff = 10
-            if diff < ONLINE_TIMEOUT:
-                return True
+            return True
         return False
+
+
+    def get_offline(self, time=0):
+        ONLINE_TIMEOUT = 300
+        time = self.get_current_time(-ONLINE_TIMEOUT)
+        dt = self._fetchall(f"select * from online where date_last_conn < '{time}'")
+        return dt
 
 
     def delete_online(self, mac):
         self._commit(f"delete from online where mac = '{mac}'")
+        self._commit(f"delete from o_u_bonds where mac = '{mac}'")
+
+
+
+
+
+    def make_bond(self, mac, user_login):
+        r = self._fetchall(f"select * from o_u_bonds where mac = '{mac}' and user_id = {user_login}")
+        if not r:
+            self._commit(f"insert into o_u_bonds (mac, user_id) values ('{mac}', {user_login})")
+
+    def get_bonds(self, mac):
+        r = self._fetchall(f"select * from o_u_bonds where mac = '{mac}'")
+        return r
+
 
 
 
