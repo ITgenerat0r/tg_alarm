@@ -138,9 +138,8 @@ def handler(conn, addr):
 				if s_ind >= 0:
 					sender = data[:s_ind]
 					data = data[s_ind+2:].strip()
-				if data == "no data":
-					pass
-				else:
+				if data != "no data":
+					# prt(f"DATA(!= 'no data'): {data}")
 					try:
 						if chat:
 							data = f"From {sender}: \n{data}"
