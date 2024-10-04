@@ -156,8 +156,6 @@ def handler(conn, addr):
 										x = ind
 									tx = data[:x]
 									data = data[x:]
-									prt(yellow_text(tx))
-									prt(blue_text(data))
 									bot.send_message(chat, tx)
 					except Exception as e:
 						print("Failed to send data!")
