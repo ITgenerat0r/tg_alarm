@@ -195,20 +195,24 @@ def handler(conn, addr):
 def offline_seeker():
 	DELAY_BETWEEN_CHECKING = 300
 	
-	d = Alarm_database(Config.host, Config.user, Config.password, Config.db_name)
-	global DB_timeout
-	d.connect()
-	d.set_time_out(DB_timeout)
-	global bot
-	for device in d.get_offline():
-		mac = device['mac']
-		nm = device['short_name']
-		for u in d.get_bonds(mac):
-			login = u['user_id']
-			bot.send_message(login, f"Client [{mac}]({nm}) disconnected!")
-		d.delete_online(mac)
+	while True:
+		try:
+			d = Alarm_database(Config.host, Config.user, Config.password, Config.db_name)
+			global DB_timeout
+			d.connect()
+			d.set_time_out(DB_timeout)
+			global bot
+			for device in d.get_offline():
+				mac = device['mac']
+				nm = device['short_name']
+				for u in d.get_bonds(mac):
+					login = u['user_id']
+					bot.send_message(login, f"Client [{mac}]({nm}) disconnected!")
+				d.delete_online(mac)
 
-	sleep(DELAY_BETWEEN_CHECKING)
+			sleep(DELAY_BETWEEN_CHECKING)
+		except Exception as e:
+			prt(f"Error: {e}")
 
 
 
