@@ -107,10 +107,10 @@ def handler(conn, addr):
 				mac = rx_data.get(3)
 				nm = rx_data.get(4)
 				db.set_online(mac, nm)
-				db.make_bond(mac, login)
 				res = "failed"
 				if db.login(login, sha256):
 					# ok
+					db.make_bond(mac, login)
 					db.set_login_to_session(session_id, login)
 					db.set_iv(session_id, iv)
 					db.set_aes_key(session_id, sha256)
