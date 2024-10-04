@@ -16,7 +16,7 @@ from data_split_class import LData
 from MDataBase import Alarm_database
 import Config
 
-version = "1.2"
+version = "1.4"
 
 HOST = '0.0.0.0'  # Standard loopback interface address (localhost)
 PORT = 11201      # Port to listen on (non-privileged ports are > 1023)
