@@ -29,9 +29,9 @@ PORT = 11201
 DELAY_MAIN = 60
 MAX_DELAY_MAIN = 60
 RSA_KEY_LENGTH = 2048
-MAC = get_mac()
+MAC = hex(get_mac())[2:]
 
-VERSION = "1.3"
+VERSION = "1.4"
 
 logs = True
 
