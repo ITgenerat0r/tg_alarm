@@ -8,7 +8,7 @@ from includes import *
 from data_split_class import LData
 from controller import Controller
 from security import Security
-from parser import Parser
+from parser_class import Parser
 # from daemon import *
 # import subprocess
 import getpass
