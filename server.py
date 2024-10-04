@@ -219,6 +219,14 @@ def offline_seeker():
 
 server_run = True
 db_run = True
+prt()
+prt("Run offline_seeker()...")
+try:
+	ths.run(offline_seeker, ())
+except Exception as e:
+	prt("Failed to run offline_seeker()!")
+	prt(f"Catching error: {e}")
+	
 while server_run:
 	try:
 		while db_run:
@@ -229,13 +237,6 @@ while server_run:
 				prt(f"DB error: {db_e}")
 				sleep(10)
 				db_run = True
-		prt()
-		prt("Run offline_seeker()...")
-		try:
-			ths.run(offline_seeker, ())
-		except Exception as e:
-			prt("Failed to run offline_seeker()!")
-			prt(f"Catching error: {e}")
 		prt()
 		prt("Listen...")
 		prt()
