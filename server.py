@@ -105,7 +105,8 @@ def handler(conn, addr):
 				iv = rx_data.get(1)
 				sha256 = rx_data.get(2)
 				mac = rx_data.get(3)
-				db.set_online(mac)
+				nm = rx_data.get(4)
+				db.set_online(mac, nm)
 				db.make_bond(mac, login)
 				res = "failed"
 				if db.login(login, sha256):
@@ -210,9 +211,9 @@ def offline_seeker():
 					bot.send_message(login, f"Client [{mac}]({nm}) disconnected!")
 				d.delete_online(mac)
 
-			sleep(DELAY_BETWEEN_CHECKING)
 		except Exception as e:
 			prt(f"Error: {e}")
+		sleep(DELAY_BETWEEN_CHECKING)
 
 
 

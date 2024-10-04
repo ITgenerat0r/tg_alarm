@@ -247,12 +247,14 @@ class Alarm_database(Database):
             return dt[0]
         return {}
 
-    def set_online(self, mac):
+    def set_online(self, mac, nm = ""):
         time = self.get_current_time()
         if self.get_online(mac):
             self._commit(f"update online set date_last_conn = '{time}' where mac = '{mac}'")
         else:
             self._commit(f"insert into online (mac, date_last_conn) values ('{mac}', '{time}')")
+        if nm:
+            self.set_online_name(mac, nm)
     
     def set_online_name(self, mac, short_name):
         if short_name and self.get_online(mac):
