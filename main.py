@@ -1,6 +1,6 @@
 import telebot
 from telebot import types
-from threads import Threads
+from thread import Threads
 
 from includes import *
 import Config
