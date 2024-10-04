@@ -142,17 +142,17 @@ class Alarm_database(Database):
             self._commit(f"insert into users({columns}) values ({values})")
 
 
-    def set_user_name(self, id, name):
+    def set_user_name(self, login, name):
         if name:
-            self._commit(f"update users set u_name = '{name}' where id = {id}")
+            self._commit(f"update users set u_name = '{name}' where u_login = {login}")
 
     def set_user_login(self, id, login):
         if login:
             self._commit(f"update users set u_login = {login} where id = {id}")
 
-    def set_user_password(self, id, phash):
+    def set_user_password(self, login, phash):
         if phash:
-            self._commit(f"update users set u_passhash = '{phash}' where id = {id}")
+            self._commit(f"update users set u_passhash = '{phash}' where u_login = {login}")
 
 
     def delete_user(self, id):
