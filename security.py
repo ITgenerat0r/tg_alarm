@@ -77,7 +77,10 @@ class Security():
 
 		# return s[: -int(s[len(s) - 1:], 16)-1]
 
-		return s[: -ord(s[len(s) - 1 :])]
+		if s:
+			return s[: -ord(s[len(s) - 1 :])]
+		else:
+			return b''
 
 
 	def encrypt(self, plain_text, key, iv):

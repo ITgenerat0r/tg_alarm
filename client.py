@@ -115,38 +115,42 @@ while bot_running:
 
 	if data:
 		for login in users:
-			passwd = users[login]
+			try:
+				passwd = users[login]
 
-			rx = req(f'ns {RSA_KEY_LENGTH}')
-			sc.set_key_len(RSA_KEY_LENGTH)
+				rx = req(f'ns {RSA_KEY_LENGTH}')
+				sc.set_key_len(RSA_KEY_LENGTH)
 
-			rx_data = LData(rx)
-			session_id = rx_data.get(0)
-			pubkey = rx_data.get(1)
+				rx_data = LData(rx)
+				session_id = rx_data.get(0)
+				pubkey = rx_data.get(1)
 
-			iv = sc.new_iv()
-			sha256 = sc.sha256(passwd)
-			tx_data = f"{login} {iv} {sha256} {MAC} {station_name}"
-			tx = sc.rsa_encrypt(tx_data, pubkey)
-
-			rx_en = req(f"{session_id} {tx}")
-
-			rx = sc.decrypt(rx_en, sha256, iv)
-			rx_data = LData(rx)
-			if rx_data.get(0) == "success":
-				# send data
-				prt(f"Authentication was successful ({login})!")
-				tx = sc.encrypt(f"{station_name}: \n{data}", sha256, rx_en[-32:])
-				iv = tx[-32:]
+				iv = sc.new_iv()
+				sha256 = sc.sha256(passwd)
+				tx_data = f"{login} {iv} {sha256} {MAC} {station_name}"
+				tx = sc.rsa_encrypt(tx_data, pubkey)
 
 				rx_en = req(f"{session_id} {tx}")
 
 				rx = sc.decrypt(rx_en, sha256, iv)
-				if rx == "ok":
-					prt(f"Data sended ({login})!")
-					# good, data sended
-			else:
-				prt(f"Authentication failed ({login})!")
+				rx_data = LData(rx)
+				if rx_data.get(0) == "success":
+					# send data
+					prt(f"Authentication was successful ({login})!")
+					tx = sc.encrypt(f"{station_name}: \n{data}", sha256, rx_en[-32:])
+					iv = tx[-32:]
+
+					rx_en = req(f"{session_id} {tx}")
+
+					rx = sc.decrypt(rx_en, sha256, iv)
+					if rx == "ok":
+						prt(f"Data sended ({login})!")
+						# good, data sended
+				else:
+					prt(f"Authentication failed ({login})!")
+			except Exception as e:
+				prt(f"Failed send data for user {login}!")
+				prt(f"Error: {e}")
 
 
 
