@@ -6,11 +6,11 @@ USE alarm_db;
 
 CREATE TABLE users
 (
-    id int NOT NULL AUTO_INCREMENT,
-    u_login bigint not null unique,
+    id int not null,
+    u_login bigint not null,
     u_passhash varchar(256) not null,
     u_name varchar(256),
-    CONSTRAINT PK_users PRIMARY KEY(id)
+    CONSTRAINT PK_users PRIMARY KEY(u_login)
 );
 
 CREATE TABLE sessions
@@ -20,7 +20,10 @@ CREATE TABLE sessions
     aes_iv varchar(256),
     aes_key varchar(2410),
     date_last_conn datetime,
-    CONSTRAINT PK_sessions PRIMARY KEY (id)
+    CONSTRAINT PK_sessions PRIMARY KEY (id),
+    KEY IDX_USER (id),
+    CONSTRAINT FK_sessions FOREIGN KEY(user_id) REFERENCES users(u_login)
+    ON UPDATE CASCADE
 );
 
 
@@ -41,7 +44,13 @@ CREATE TABLE o_u_bonds
     id int not null AUTO_INCREMENT,
     mac varchar(32) not null,
     user_id bigint not null,
-    CONSTRAINT PK_ou_bonds PRIMARY KEY (id)
+    CONSTRAINT PK_ou_bonds PRIMARY KEY (id),
+
+    -- CONSTRAINT FK_bonds FOREIGN KEY(mac) REFERENCES online(mac)
+    -- ON UPDATE CASCADE,
+
+    CONSTRAINT FK_bonds FOREIGN KEY(user_id) REFERENCES users(u_login)
+    ON UPDATE CASCADE
 );
 
 
