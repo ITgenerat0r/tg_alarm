@@ -144,7 +144,7 @@ while bot_running:
 
 					rx = sc.decrypt(rx_en, sha256, iv)
 					if rx == "ok":
-						prt(f"Data sended ({login})!")
+						prt(f"Data sended ({login})!\n")
 						# good, data sended
 				else:
 					prt(f"Authentication failed ({login})!")
