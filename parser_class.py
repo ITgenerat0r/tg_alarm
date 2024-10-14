@@ -7,7 +7,8 @@ class Parser():
 
 		self.__months = {"января" : 1, "февраля" : 2, "марта" : 3, "апреля" : 4, "мая" : 5, "июня" : 6, "июля" : 7, "августа" : 8, "сентября" : 9, "октября" : 10, "ноября" : 11, "декабря" : 12}
 		
-		self.__last_warning = ""
+		self.__cache_filename = "client_cache"
+		self.__last_warning = self.__load_last_warning()
 
 		self.__last_day = "1"
 		self.__last_month = 1
@@ -57,6 +58,26 @@ class Parser():
 			self.__last_time = time
 		return key
 
+	def __save_last_warning(self, warning):
+		if warning:
+			self.__last_warning = warning
+			try:
+				f = open(self.__cache_filename, "w+")
+				f.write(warning)
+				f.close()
+			except Exception as e:
+				self.__prt(f"Can't save last warining in file '{self.__cache_filename}'.\n Error: {e}")
+
+	def __load_last_warning(self):
+		try:
+			f = open(self.__cache_filename, "r")
+			self.__last_warning = f.read()
+			f.close()
+			return self.__last_warning
+		except Exception as e:
+			self.__last_warning = ""
+			return ""
+
 
 	def parse_file(self, filename, enc="1251"):
 		# res = []
@@ -68,7 +89,7 @@ class Parser():
 			print(f"line: {line}")
 			if self.__last_warning == "" or self.__last_warning == line:
 				key = False
-				self.__last_warning = line
+				self.__save_last_warning(line)
 				continue
 			if key or line == "":
 				continue
