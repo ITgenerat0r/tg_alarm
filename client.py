@@ -111,13 +111,10 @@ if station_name == "default":
 sc = Security(True)
 p = Parser()
 
+data = f"Started at {get_time()}(local time)"
 
 bot_running = True
 while bot_running:
-	# PARSING
-	# data = f"{station_name}: \n"
-	data = p.parse_file(filename)
-
 
 
 	prt(yellow_text(f"DATA: {data}"))
@@ -165,6 +162,10 @@ while bot_running:
 			except Exception as e:
 				prt(f"Failed send data for user {login}!")
 				prt(f"Error: {e}")
+
+	# PARSING
+	# data = f"{station_name}: \n"
+	data = p.parse_file(filename)
 
 
 
