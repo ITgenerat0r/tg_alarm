@@ -75,6 +75,7 @@ class Parser():
 			f.close()
 			return self.__last_warning
 		except Exception as e:
+			self.__prt(f"Can't load last warining from file '{self.__cache_filename}'.\n Error: {e}")
 			self.__last_warning = ""
 			return ""
 
