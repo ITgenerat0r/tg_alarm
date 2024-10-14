@@ -24,6 +24,7 @@ station_name = "default"
 
 
 
+# HOST = '192.168.0.161'
 HOST = '192.168.0.161'
 PORT = 11201  
 DELAY_MAIN = 60
@@ -94,6 +95,19 @@ help_list = ['drop', 'test', 'info']
 
 last_rc = ""
 
+
+if not users:
+	print("")
+	lg = input("Enter login:")
+	pwd = getpass.getpass(f"Password: ")
+
+if not HOST:
+	HOST = input("Enter IP:")
+
+if station_name == "default":
+	station_name = input("Enter station name:")
+
+
 sc = Security(True)
 p = Parser()
 
@@ -136,7 +150,7 @@ while bot_running:
 				rx_data = LData(rx)
 				if rx_data.get(0) == "success":
 					# send data
-					prt(f"Authentication was successful ({login})!")
+					prt(green_text(f"Authentication was successful ({login})!"))
 					tx = sc.encrypt(f"{station_name}: \n{data}", sha256, rx_en[-32:])
 					iv = tx[-32:]
 
@@ -144,10 +158,10 @@ while bot_running:
 
 					rx = sc.decrypt(rx_en, sha256, iv)
 					if rx == "ok":
-						prt(f"Data sended ({login})!\n")
+						prt(green_text(f"Data sended ({login})!\n"))
 						# good, data sended
 				else:
-					prt(f"Authentication failed ({login})!")
+					prt(red_text(f"Authentication failed ({login})!"))
 			except Exception as e:
 				prt(f"Failed send data for user {login}!")
 				prt(f"Error: {e}")
