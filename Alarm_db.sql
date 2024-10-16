@@ -30,7 +30,7 @@ CREATE TABLE sessions
 CREATE TABLE online
 (
     id int not null AUTO_INCREMENT,
-    mac varchar(32) not null unique,
+    mac varchar(64) not null unique,
     short_name varchar(256),
     date_last_conn datetime,
     CONSTRAINT PK_online PRIMARY KEY (id)

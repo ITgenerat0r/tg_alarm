@@ -149,6 +149,7 @@ while bot_running:
 
 				iv = sc.new_iv()
 				sha256 = sc.sha256(passwd)
+				# tx_data = f"{login} {iv} {sha256} {station_data['id']} {station_name}"
 				tx_data = f"{login} {iv} {sha256} {MAC} {station_name}"
 				tx = sc.rsa_encrypt(tx_data, pubkey)
 
