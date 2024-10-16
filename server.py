@@ -50,7 +50,8 @@ for i in argv:
 			PORT = i
 		elif last_arg == "-rsa-length":
 			try:
-				RSA_KEY_LENGTH = int(i)
+				if int(i) in {2048, 3072, 4096}:
+					RSA_KEY_LENGTH = int(i)
 			except Exception as e:
 				prt(e)
 
