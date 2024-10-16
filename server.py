@@ -22,7 +22,7 @@ HOST = '0.0.0.0'  # Standard loopback interface address (localhost)
 PORT = 11201      # Port to listen on (non-privileged ports are > 1023)
 
 token = Config.MyToken
-
+RSA_KEY_LENGTH = 2048
 
 logs = True
 
@@ -48,7 +48,14 @@ for i in argv:
 	else:
 		if last_arg == "-port":
 			PORT = i
+		elif last_arg == "-rsa-length":
+			RSA_KEY_LENGTH = i
 
+
+
+print('rsa key len', RSA_KEY_LENGTH)
+
+privkey, pubkey = sc.generate_rsa_keys(RSA_KEY_LENGTH)
 
 #define
 GOOD_RESPONSE = b"OK"
@@ -87,7 +94,7 @@ def handler(conn, addr):
 		if data[:2] == "ns":
 			# iv = cn.get_new_iv()
 			sp = LData(data)
-			privkey, pubkey = sc.generate_rsa_keys(int(sp.get(1)))
+			# privkey, pubkey = sc.generate_rsa_keys(int(sp.get(1)))
 			session_id = db.new_session(aes_key=privkey)
 			cn.send(f"{session_id} {pubkey}")
 		elif data.find(' ') >= 0:

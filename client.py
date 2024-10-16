@@ -32,7 +32,7 @@ MAX_DELAY_MAIN = 60
 RSA_KEY_LENGTH = 2048
 MAC = hex(get_mac())[2:]
 
-VERSION = "1.4"
+VERSION = "1.5"
 
 logs = True
 
