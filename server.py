@@ -49,7 +49,10 @@ for i in argv:
 		if last_arg == "-port":
 			PORT = i
 		elif last_arg == "-rsa-length":
-			RSA_KEY_LENGTH = i
+			try:
+				RSA_KEY_LENGTH = int(i)
+			except Exception as e:
+				prt(e)
 
 
 
