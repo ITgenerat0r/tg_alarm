@@ -165,13 +165,13 @@ class Parser():
 
 
 
-p = Parser()
-# print(p.is_bigger("9:12:13", "8:12:14"))
-dt = p.parse_config('../wellinfo.config')
-result = p.translate_config(dt)
-# print(result)
-for i in result:
-	print(f"{i}: {result[i]}")
+# p = Parser()
+# # print(p.is_bigger("9:12:13", "8:12:14"))
+# dt = p.parse_config('../wellinfo.config')
+# result = p.translate_config(dt)
+# # print(result)
+# for i in result:
+# 	print(f"{i}: {result[i]}")
 
 
 
