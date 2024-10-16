@@ -55,7 +55,6 @@ for i in argv:
 
 print('rsa key len', RSA_KEY_LENGTH)
 
-privkey, pubkey = sc.generate_rsa_keys(RSA_KEY_LENGTH)
 
 #define
 GOOD_RESPONSE = b"OK"
@@ -68,6 +67,7 @@ db = Alarm_database(Config.host, Config.user, Config.password, Config.db_name)
 sc = Security()
 bot = telebot.TeleBot(token)
 
+privkey, pubkey = sc.generate_rsa_keys(RSA_KEY_LENGTH)
 
 def db_connect():
 	global db
