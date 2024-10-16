@@ -114,6 +114,45 @@ class Parser():
 		return res.strip()
 
 
+	def parse_item(self, item):
+		b_ind = item.find('value="')
+		if b_ind >= 0:
+			m_ind = item.find('" name="')
+			if m_ind > 0:
+				e_ind = item.find('"/>')
+				if e_ind > 0:
+					value = item[b_ind+7:m_ind]
+					key = item[m_ind+8:e_ind]
+					item = item[e_ind+3:]
+					print(f"key: {key}")
+					print(f"value: {value}")
+					print(f"item: {item}")
+					return (key, value, item)
+		return ("", "", "")
+
+	def parse_config(self, filename, enc="UTF-16-le"):
+		data = {}
+		f = open(filename, 'r', encoding=enc)
+		for line in f:
+			print(line)
+			(k, v, item) = self.parse_item(line)
+			if k:
+				data[k] = v
+			while item != "":
+				(k, v, item) = self.parse_item(item)
+				if k:
+					data[k] = v
+		f.close()
+		return data
+
+	def translate_config(self, udata):
+		alphabet = {'well': "Скважина", 'cluster': "Куст", 'field': "Месторождение", 'id' : "uuid"}
+		org_alph = {'customer': "Клиент", 'master': "Мастер", 'operators': "Операторы", 'organization': "Организация", 'party': "Номер партии", 'partyhead': "Нач. партии", 'tz': "Часовой пояс"}
+		data = {}
+		for k in udata:
+			if k in alphabet:
+				data[alphabet[k]] = udata[k]
+		return data
 
 
 
@@ -124,15 +163,15 @@ class Parser():
 
 
 
-# p = Parser()
-# # print(p.is_bigger("9:12:13", "8:12:14"))
-# result = p.parse_file('test.txt')
+
+
+p = Parser()
+# print(p.is_bigger("9:12:13", "8:12:14"))
+dt = p.parse_config('../wellinfo.config')
+result = p.translate_config(dt)
 # print(result)
-
-# print('-')
-# result = p.parse_file('test.txt')
-
-# print(result)
+for i in result:
+	print(f"{i}: {result[i]}")
 
 
 

@@ -20,6 +20,7 @@ help_data = "client -u <login> -name <name(who sended data)> -f <input_file> -ip
 users = {}
 
 filename = "logs.txt"
+config_filename = "../wellinfo.config"
 station_name = "default"
 
 
@@ -32,7 +33,7 @@ MAX_DELAY_MAIN = 60
 RSA_KEY_LENGTH = 2048
 MAC = hex(get_mac())[2:]
 
-VERSION = "1.5"
+VERSION = "1.6"
 
 logs = True
 
@@ -110,11 +111,21 @@ if station_name == "default":
 
 sc = Security(True)
 p = Parser()
-
-data = f"Started at {get_time()}(local time)"
+station_data = p.parse_config(config_filename)
+data = f"Started at {get_time()}(local time)\n"
+try:
+	tx_station_data = p.translate_config(station_data)
+	for i in tx_station_data:
+		data += f"{i}: {tx_station_data[i]}\n"
+except Exception as e:
+	print(e)
 
 bot_running = True
 while bot_running:
+
+	# PARSING
+	# data = f"{station_name}: \n"
+	data += p.parse_file(filename)
 
 
 	prt(yellow_text(f"DATA: {data}"))
@@ -163,11 +174,9 @@ while bot_running:
 				prt(f"Failed send data for user {login}!")
 				prt(f"Error: {e}")
 
-	# PARSING
-	# data = f"{station_name}: \n"
-	data = p.parse_file(filename)
+	
 
-
+	data = ""
 
 	sleep(DELAY_MAIN)
 	# bot_running = False # dev, remove for release
