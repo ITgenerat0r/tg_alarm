@@ -210,6 +210,7 @@ def offline_seeker():
 	while True:
 		try:
 			d = Alarm_database(Config.host, Config.user, Config.password, Config.db_name)
+			d.set_logs(False)
 			global DB_timeout
 			d.connect()
 			d.set_time_out(DB_timeout)

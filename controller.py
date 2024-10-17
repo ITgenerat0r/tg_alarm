@@ -50,10 +50,10 @@ class Controller():
 	def send(self, text):
 		# self.__prt(f"send({text})")
 		# text = self.__cipher.encrypt(text_clear)
+		self.__prt(yellow_text(f"=>"))
 		if self.__encryption:
 			text = self.encrypt(text)
 			self.__iv = text[-32:]
-		self.__prt()
 		while len(text) > self.__package_size - self.__code_size:
 			self.__send_bit(f"b_{text[:self.__code_size]}")
 			text = text[self.__code_size:]
@@ -75,7 +75,9 @@ class Controller():
 				break
 		# self.__prt(f"recv() = {res}")
 		if self.__encryption:
+			self.__prt(yellow_text(f"<="))
 			return self.decrypt(res)
+		self.__prt(yellow_text(f"<="))
 		return res
 
 	def decrypt(self, data):
