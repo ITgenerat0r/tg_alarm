@@ -93,7 +93,7 @@ class Database:
             self.wait_connect()
             return self.__commit(cmd, err)
 
-    def __fetchall(self, cmd, err="fetch error"):
+    def _fetchall(self, cmd, err="fetch error"):
         with self.connection.cursor() as cursor:
             try:
                 if self.__logs:
