@@ -249,8 +249,8 @@ db_run = True
 prt()
 prt("Run offline_seeker()...")
 try:
-	# ths.run(offline_seeker, ())
-	ths.run(debug_offline_seeeker, ())
+	ths.run(offline_seeker, ())
+	# ths.run(debug_offline_seeeker, ())
 except Exception as e:
 	prt("Failed to run offline_seeker()!")
 	prt(f"Catching error: {e}")

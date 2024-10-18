@@ -87,18 +87,18 @@ class Parser():
 		key = True
 		for line in f:
 			line = line.strip()
-			print(f"line: {line}")
+			# print(f"line: {line}")
 			if self.__last_warning == "" or self.__last_warning == line:
 				key = False
 				self.__save_last_warning(line)
 				continue
 			if key or line == "":
 				continue
-			print("check")
+			# print("check")
 			self.__last_warning = line
 			if line.find("Предупреждение:") >= 0:
 				res += line + "\n"
-				print("add")
+				# print("add")
 				# ind = line.find(" : ")
 				# if ind > 0:
 				# 	time = line[:ind].strip()
@@ -110,7 +110,7 @@ class Parser():
 		if key:
 			self.__last_warning = ""
 		f.close()
-		print(f"res: {res}")
+		# print(f"res: {res}")
 		return res.strip()
 
 
@@ -124,9 +124,9 @@ class Parser():
 					value = item[b_ind+7:m_ind]
 					key = item[m_ind+8:e_ind]
 					item = item[e_ind+3:]
-					print(f"key: {key}")
-					print(f"value: {value}")
-					print(f"item: {item}")
+					# print(f"key: {key}")
+					# print(f"value: {value}")
+					# print(f"item: {item}")
 					return (key, value, item)
 		return ("", "", "")
 
@@ -134,7 +134,7 @@ class Parser():
 		data = {}
 		f = open(filename, 'r', encoding=enc)
 		for line in f:
-			print(line)
+			# print(line)
 			(k, v, item) = self.parse_item(line)
 			if k:
 				data[k] = v
