@@ -232,16 +232,16 @@ def offline_seeker(rn = True):
 		sleep(DELAY_BETWEEN_CHECKING)
 
 
-def debug_offline_seeeker():
-	DELAY_BETWEEN_CHECKING = 300
+# def debug_offline_seeeker():
+# 	DELAY_BETWEEN_CHECKING = 300
 	
-	while True:
-		try:
+# 	while True:
+# 		try:
 			
 
-		except Exception as e:
-			prt(f"Error: {e}")
-		sleep(DELAY_BETWEEN_CHECKING)
+# 		except Exception as e:
+# 			prt(f"Error: {e}")
+# 		sleep(DELAY_BETWEEN_CHECKING)
 
 
 server_run = True
