@@ -132,17 +132,20 @@ class Parser():
 
 	def parse_config(self, filename, enc="UTF-16-le"):
 		data = {}
-		f = open(filename, 'r', encoding=enc)
-		for line in f:
-			# print(line)
-			(k, v, item) = self.parse_item(line)
-			if k:
-				data[k] = v
-			while item != "":
-				(k, v, item) = self.parse_item(item)
+		try:
+			f = open(filename, 'r', encoding=enc)
+			for line in f:
+				# print(line)
+				(k, v, item) = self.parse_item(line)
 				if k:
 					data[k] = v
-		f.close()
+				while item != "":
+					(k, v, item) = self.parse_item(item)
+					if k:
+						data[k] = v
+			f.close()
+		except Exception as e:
+			self.__prt(f"parse config error: {e}")
 		return data
 
 	def translate_config(self, udata):
