@@ -67,7 +67,7 @@ DB_timeout = 2147483
 
 
 ths = Threads()
-db = Alarm_database(Config.host, Config.user, Config.password, Config.db_name)
+# db = Alarm_database(Config.host, Config.user, Config.password, Config.db_name)
 sc = Security()
 bot = telebot.TeleBot(token)
 
@@ -83,6 +83,8 @@ def db_connect():
 
 sleep(3)
 
+debug_storage = {}
+
 
 def handler(conn, addr):
 	global server_run
@@ -91,6 +93,8 @@ def handler(conn, addr):
 		prt(f'Connected by {addr}')
 		cn = Controller(conn, logs)
 
+		db = Alarm_database(Config.host, Config.user, Config.password, Config.db_name)
+		db.connect()
 		data = cn.recv()
 		if logs:
 			print("Received:", data)
@@ -204,10 +208,10 @@ def handler(conn, addr):
 
 
 
-def offline_seeker():
+def offline_seeker(rn = True):
 	DELAY_BETWEEN_CHECKING = 300
 	
-	while True:
+	while rn:
 		try:
 			d = Alarm_database(Config.host, Config.user, Config.password, Config.db_name)
 			d.set_logs(False)
@@ -228,27 +232,39 @@ def offline_seeker():
 		sleep(DELAY_BETWEEN_CHECKING)
 
 
+def debug_offline_seeeker():
+	DELAY_BETWEEN_CHECKING = 300
+	
+	while True:
+		try:
+			
+
+		except Exception as e:
+			prt(f"Error: {e}")
+		sleep(DELAY_BETWEEN_CHECKING)
+
 
 server_run = True
 db_run = True
 prt()
 prt("Run offline_seeker()...")
 try:
-	ths.run(offline_seeker, ())
+	# ths.run(offline_seeker, ())
+	ths.run(debug_offline_seeeker, ())
 except Exception as e:
 	prt("Failed to run offline_seeker()!")
 	prt(f"Catching error: {e}")
 	
 while server_run:
 	try:
-		while db_run:
-			try:
-				db_connect()
-				db_run = False
-			except Exception as db_e:
-				prt(f"DB error: {db_e}")
-				sleep(10)
-				db_run = True
+		# while db_run:
+		# 	try:
+		# 		db_connect()
+		# 		db_run = False
+		# 	except Exception as db_e:
+		# 		prt(f"DB error: {db_e}")
+		# 		sleep(10)
+		# 		db_run = True
 		prt()
 		prt("Listen...")
 		prt()

@@ -4,6 +4,7 @@ import pymysql
 from uuid import uuid4
 from datetime import datetime, timedelta
 from shutil import copy
+from time import sleep
 
 
 
@@ -65,7 +66,7 @@ class Database:
         # return line.replace("'", '"')
         return line.replace('"', "'")
 
-    def _commit(self, cmd, err="commit error"):
+    def __commit(self, cmd, err="commit error"):
         with self.connection.cursor() as cursor:
             try:
                 if self.__logs:
@@ -74,35 +75,60 @@ class Database:
                 self.connection.commit()
                 return True
             except Exception as ex:
+                self.__status = 0
                 if self.__logs:
                     print(cmd)
                     print(red_text("Error:"), err)
                     print(ex)
                     if self.__stop_errors:
                         input("Press enter to continue...")
-                self.__status = 0
-                self.heal()
                 return False
             return False
 
-    def _fetchall(self, cmd, err="fetch error"):
-         with self.connection.cursor() as cursor:
+    def _commit(self, cmd, err="commit error"):
+        x = self.__commit(cmd, err)
+        if x:
+            return x
+        else:
+            self.wait_connect()
+            return self.__commit(cmd, err)
+
+    def __fetchall(self, cmd, err="fetch error"):
+        with self.connection.cursor() as cursor:
             try:
                 if self.__logs:
                     print(f"_fetchall({cmd})")
                 cursor.execute(cmd)
                 return cursor.fetchall()
             except Exception as ex:
+                self.__status = 0
                 if self.__logs:
                     print(red_text("Error:"), err)
                     print(cmd)
                     print(ex)
                     if self.__stop_errors:
                         input("Press enter to continue...")
-                self.__status = 0
-                self.heal()
-                return {}
+                self.wait_connect()
+                with self.connection.cursor() as cursor:
+                    try:
+                        if self.__logs:
+                            print(f"_fetchall({cmd})")
+                        cursor.execute(cmd)
+                        return cursor.fetchall()
+                    except Exception as ex:
+                        self.__status = 0
+                        if self.__logs:
+                            print(red_text("Error:"), err)
+                            print(cmd)
+                            print(ex)
+                            if self.__stop_errors:
+                                input("Press enter to continue...")
+                        self.wait_connect()
+                        return {}
+                    return {}
             return {}
+
+
 
     def heal(self):
         if self.__status != 1:
@@ -116,6 +142,12 @@ class Database:
     def get_current_time(self, step=0):
         # return datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
         return (datetime.now() + timedelta(seconds=step) ).strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+
+
+    def wait_connect(self):
+        while self.__status != 1:
+            self.connect()
+            sleep(5)
 
 
 
