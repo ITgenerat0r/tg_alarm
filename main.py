@@ -1,20 +1,18 @@
 import telebot
 from telebot import types
 from thread import Threads
+import getpass
 
 from includes import *
-import Config
 import sys
 from MDataBase import Alarm_database
 from security import Security
 
 
-# DB = MDataBase.Database("localhost", "root", Config.password, Config.bd_name)
-# DB = MDataBase.DatabaseTS("localhost", "root", Config.password, Config.bd_name_ts)
 
 
 # admins
-admins = Config.admins
+admins = []
 
 version = "1.0"
 
@@ -24,7 +22,11 @@ max_lives = 5000
 max_delay_between_errors = 60
 delay_between_errors = 1
 
-token = Config.MyToken
+token = ""
+DB_HOST = "127.0.0.1"
+DB_USER = ""
+DB_PASS = ""
+DB_NAME = "alarm_db"
 
 prod = True
 
@@ -32,12 +34,61 @@ prod = True
 start_time = datetime.datetime.now()
 last_err_time = start_time
 
+last_arg = ""
+for i in sys.argv:
+    if i[0] == '-':
+        last_arg = i
+        if i == "-log":
+            print("Log enabled")
+            logs = True
+        elif i == "-help":
+            print(f"Version {VERSION}")
+            print(help_data)
+            sys.exit()
+    else:
+        if last_arg == "-u":
+            pwd = getpass.getpass(f"Password for user {i}: ")
+            users[i] = pwd
+        elif last_arg == "-f":
+            filename = i
+        elif last_arg == "-ip":
+            HOST = i
+        elif last_arg == "-port":
+            PORT = i
+        elif last_arg == "-name":
+            station_name = i
+        elif last_arg == "-token":
+            token = i
+        elif last_arg == "-dbhost":
+            DB_HOST = i
+        elif last_arg == "-dbuser":
+            DB_USER = i
+        elif last_arg == "-dbpass":
+            DB_PASS = i
+        elif last_arg == "-dbname":
+            DB_NAME = i
+        elif last_arg == "-admin" or last_arg == "-admins":
+            admins.append(i)
+
+
+# checking params
+if not DB_USER:
+    DB_USER = input("Enter user login for database: ")
+if not DB_PASS:
+    DB_PASS = getpass.getpass(f"Password for {DB_USER}: ")
+if not token:
+    token = input("Enter token:")
+
+if not admins:
+    print("Warning: There is no admin!")
+
+
 print('bot init...')
 bot = telebot.TeleBot(token)
 print('threads init...')
 thr = Threads()
 
-db = Alarm_database(Config.host, Config.user, Config.password, Config.db_name)
+db = Alarm_database(DB_HOST, DB_USER, DB_PASS, DB_NAME)
 
 update_state = True
 
@@ -77,7 +128,7 @@ def start_bot():
 @bot.message_handler(commands=['drop', 'stop'])
 def drop_bot(message):
 
-    if message.from_user.id == Config.ITGenerator:
+    if message.from_user.id in admins:
         if message.text.lower() in ['yes', 'y'] or not prod:
             print(yellow_text(get_time()), f"Bot has dropped by {message.from_user.id}({green_text(str(message.from_user.username))})")
             live_countdown = 0
@@ -104,7 +155,7 @@ def reset_live_countdown():
     global live_countdown
     global max_lives
     global is_sending
-    # bot = telebot.TeleBot(Config.MyToken)
+    # bot = telebot.TeleBot(token)
     # thr = Threads()
     with thr.rlock():
         is_sending = []

@@ -5,6 +5,7 @@ from time import sleep
 import subprocess
 from subprocess import PIPE
 import telebot
+import getpass
 
 
 
@@ -14,15 +15,21 @@ from security import Security
 from thread import Threads
 from data_split_class import LData
 from MDataBase import Alarm_database
-import Config
+
 
 version = "1.4"
 
 HOST = '0.0.0.0'  # Standard loopback interface address (localhost)
 PORT = 11201      # Port to listen on (non-privileged ports are > 1023)
 
-token = Config.MyToken
 RSA_KEY_LENGTH = 2048
+
+
+token = ""
+DB_HOST = "127.0.0.1"
+DB_USER = ""
+DB_PASS = ""
+DB_NAME = "alarm_db"
 
 logs = True
 
@@ -45,6 +52,9 @@ for i in argv:
 			print("Log enabled")
 			logs = True
 			print(f"Version {version}")
+		elif i == "-help":
+			print("In development.")
+			sys.exit()
 	else:
 		if last_arg == "-port":
 			PORT = i
@@ -54,6 +64,26 @@ for i in argv:
 					RSA_KEY_LENGTH = int(i)
 			except Exception as e:
 				prt(e)
+		elif last_arg == "-token":
+            token = i
+        elif last_arg == "-dbhost":
+            DB_HOST = i
+        elif last_arg == "-dbuser":
+            DB_USER = i
+        elif last_arg == "-dbpass":
+            DB_PASS = i
+        elif last_arg == "-dbname":
+            DB_NAME = i
+
+
+
+# checking params
+if not DB_USER:
+	DB_USER = input("Enter user login for database: ")
+if not DB_PASS:
+	DB_PASS = getpass.getpass(f"Password for {DB_USER}: ")
+if not token:
+	token = input("Enter token:")
 
 
 
@@ -67,7 +97,7 @@ DB_timeout = 2147483
 
 
 ths = Threads()
-# db = Alarm_database(Config.host, Config.user, Config.password, Config.db_name)
+# db = Alarm_database(DB_HOST, DB_USER, DB_PASS, DB_NAME)
 sc = Security()
 bot = telebot.TeleBot(token)
 
@@ -93,7 +123,7 @@ def handler(conn, addr):
 		prt(f'Connected by {addr}')
 		cn = Controller(conn, logs)
 
-		db = Alarm_database(Config.host, Config.user, Config.password, Config.db_name)
+		db = Alarm_database(DB_HOST, DB_USER, DB_PASS, DB_NAME)
 		db.connect()
 		data = cn.recv()
 		if logs:
@@ -213,7 +243,7 @@ def offline_seeker(rn = True):
 	
 	while rn:
 		try:
-			d = Alarm_database(Config.host, Config.user, Config.password, Config.db_name)
+			d = Alarm_database(DB_HOST, DB_USER, DB_PASS, DB_NAME)
 			d.set_logs(False)
 			global DB_timeout
 			d.connect()
