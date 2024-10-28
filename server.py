@@ -106,7 +106,8 @@ privkey, pubkey = sc.generate_rsa_keys(RSA_KEY_LENGTH)
 def db_connect():
 	global db
 	global DB_timeout
-	db.connect()
+	# db.connect()
+	db.selfcheck()
 	db.set_time_out(DB_timeout)
 
 
@@ -124,7 +125,8 @@ def handler(conn, addr):
 		cn = Controller(conn, logs)
 
 		db = Alarm_database(DB_HOST, DB_USER, DB_PASS, DB_NAME)
-		db.connect()
+		# db.connect()
+		db.selfcheck()
 		data = cn.recv()
 		if logs:
 			print("Received:", data)
@@ -246,7 +248,8 @@ def offline_seeker(rn = True):
 			d = Alarm_database(DB_HOST, DB_USER, DB_PASS, DB_NAME)
 			d.set_logs(False)
 			global DB_timeout
-			d.connect()
+			# d.connect()
+			db.selfcheck()
 			d.set_time_out(DB_timeout)
 			global bot
 			for device in d.get_offline():

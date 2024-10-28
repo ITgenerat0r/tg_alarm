@@ -107,7 +107,8 @@ def start_bot():
         last_err_time = datetime.datetime.now()
         global db
         global DB_timeout
-        db.connect()
+        # db.connect()
+        db.selfcheck()
         db.set_time_out(DB_timeout)
         print(yellow_text(get_time()), "Runned.")
         bot.polling(none_stop=False, timeout=1)

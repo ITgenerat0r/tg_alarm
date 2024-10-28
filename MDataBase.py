@@ -22,6 +22,7 @@ class Database:
         self.__status = 1
         self.__logs = True
         self.__stop_errors = False
+        self.connection = None
 
 
     def set_time_out(self, tm=28800):
@@ -51,12 +52,14 @@ class Database:
             self.__status = 1
             if self.__logs:
                 print(f"success {self.db_name}")
+            return True
         except Exception as ex:
             if self.__logs:
                 print(f"Connection refused {self.db_name}")
-                print(ex)
+                print(f"Error: {ex}")
                 if self.__stop_errors:
                     input("Press enter to continue...")
+            return False
 
 
     def _checkSlash(self, line):
@@ -149,6 +152,40 @@ class Database:
             self.connect()
             sleep(5)
 
+    def selfcreate(self):
+        print("CREATE")
+
+        try:
+            self.connection = pymysql.connect(
+                host=self.host,
+                port=self.__port,
+                user=self.user,
+                password=self.password,
+                cursorclass=pymysql.cursors.DictCursor
+            )
+
+
+            self._commit(f"CREATE DATABASE {self.db_name} DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;")
+
+            self._commit(f"USE {self.db_name}")
+
+            self._commit(f"CREATE TABLE users(id int not null, u_login bigint not null, u_passhash varchar(256) not null,\
+                u_name varchar(256), CONSTRAINT PK_users PRIMARY KEY(u_login));")
+
+            self._commit(f"CREATE TABLE sessions (id int not null AUTO_INCREMENT, user_id bigint, aes_iv varchar(256),\
+                aes_key varchar(2410), date_last_conn datetime, CONSTRAINT PK_sessions PRIMARY KEY (id), KEY IDX_USER (id), \
+                CONSTRAINT FK_sessions FOREIGN KEY(user_id) REFERENCES users(u_login) ON UPDATE CASCADE);")
+
+            self._commit(f"CREATE TABLE online( id int not null AUTO_INCREMENT, mac varchar(64) not null unique,\
+                short_name varchar(256), date_last_conn datetime, CONSTRAINT PK_online PRIMARY KEY (id));")
+
+            self._commit(f"CREATE TABLE o_u_bonds( id int not null AUTO_INCREMENT, mac varchar(32) not null,\
+                user_id bigint not null, CONSTRAINT PK_ou_bonds PRIMARY KEY (id), \
+                CONSTRAINT FK_bonds FOREIGN KEY(user_id) REFERENCES users(u_login) ON UPDATE CASCADE);")
+        except Exception as e:
+            print("Failed creating DB")
+            print(f"Error: {e}")
+
 
 
 
@@ -158,7 +195,18 @@ class Database:
 
 class Alarm_database(Database):
 
-    
+
+
+
+    def selfcheck(self):
+        if not self.connect():
+            self.selfcreate()
+            self.connect()
+
+
+
+
+
 
     def add_user(self, login, password, name):
         if login:
