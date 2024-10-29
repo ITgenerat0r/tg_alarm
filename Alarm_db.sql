@@ -6,8 +6,7 @@ USE alarm_db;
 
 CREATE TABLE users
 (
-    id int not null,
-    u_login bigint not null,
+    u_login bigint not null unique,
     u_passhash varchar(256) not null,
     u_name varchar(256),
     CONSTRAINT PK_users PRIMARY KEY(u_login)

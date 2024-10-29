@@ -20,7 +20,7 @@ from MDataBase import Alarm_database
 version = "1.4"
 
 HOST = '0.0.0.0'  # Standard loopback interface address (localhost)
-PORT = 11201      # Port to listen on (non-privileged ports are > 1023)
+PORT = 11201	  # Port to listen on (non-privileged ports are > 1023)
 
 RSA_KEY_LENGTH = 2048
 
@@ -65,15 +65,15 @@ for i in argv:
 			except Exception as e:
 				prt(e)
 		elif last_arg == "-token":
-            token = i
-        elif last_arg == "-dbhost":
-            DB_HOST = i
-        elif last_arg == "-dbuser":
-            DB_USER = i
-        elif last_arg == "-dbpass":
-            DB_PASS = i
-        elif last_arg == "-dbname":
-            DB_NAME = i
+			token = i
+		elif last_arg == "-dbhost":
+			DB_HOST = i
+		elif last_arg == "-dbuser":
+			DB_USER = i
+		elif last_arg == "-dbpass":
+			DB_PASS = i
+		elif last_arg == "-dbname":
+			DB_NAME = i
 
 
 
@@ -249,7 +249,7 @@ def offline_seeker(rn = True):
 			d.set_logs(False)
 			global DB_timeout
 			# d.connect()
-			db.selfcheck()
+			d.selfcheck()
 			d.set_time_out(DB_timeout)
 			global bot
 			for device in d.get_offline():

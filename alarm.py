@@ -13,11 +13,18 @@ from parser_class import Parser
 # import subprocess
 import getpass
 
+
+from thread import Threads
+import telebot
+
 from uuid import getnode as get_mac
 
-help_data = "client -u <login> -name <name(who sended data)> -f <input_file> -ip <ip> -port <port>"
+help_data = "client.exe -token <bot_token> -u <login1> <login2>\n\
+ Additional: -name <name(who sended data)> -f <input_file>"
 
-users = {}
+# users = {}
+users = []
+token = ""
 
 filename = "logs.txt"
 config_filename = "../wellinfo.config"
@@ -46,6 +53,8 @@ def prt(text=""):
 	if logs:
 		print(text)
 
+
+
 last_arg = ""
 for i in argv:
 	if i[0] == '-':
@@ -59,8 +68,8 @@ for i in argv:
 			sys.exit()
 	else:
 		if last_arg == "-u":
-			pwd = getpass.getpass(f"Password for user {i}: ")
-			users[i] = pwd
+			# pwd = getpass.getpass(f"Password for user {i}: ")
+			users.append(i)
 		elif last_arg == "-f":
 			filename = i
 		elif last_arg == "-ip":
@@ -69,8 +78,12 @@ for i in argv:
 			PORT = i
 		elif last_arg == "-name":
 			station_name = i
+		elif last_arg == "-token":
+			token = i
 
 
+if not token:
+	token = input("Enter token:")
 	
 if logs:
 	print(f"Version {VERSION}")
@@ -97,19 +110,11 @@ help_list = ['drop', 'test', 'info']
 last_rc = ""
 
 
-if not users:
-	print("")
-	lg = input("Enter login:")
-	pwd = getpass.getpass(f"Password: ")
-	users[lg] = pwd
-
-if not HOST:
-	HOST = input("Enter IP:")
-
-if station_name == "default":
-	station_name = input("Enter station name:")
+# if station_name == "default":
+# 	station_name = input("Enter station name:")
 
 
+bot = telebot.TeleBot(token)
 sc = Security(True)
 p = Parser()
 station_data = p.parse_config(config_filename)
@@ -120,6 +125,58 @@ try:
 		data += f"{i}: {tx_station_data[i]}\n"
 except Exception as e:
 	print(e)
+
+
+
+def start_bot():
+	try:
+		bot.polling(none_stop=False, timeout=1)
+	except Exception as e:
+		print(f"Bot error: {e}")
+
+
+def bot_live():
+	while True:
+		start_bot()
+
+ths = Threads()
+try:
+	ths.run(bot_live, ())
+	# ths.run(debug_offline_seeeker, ())
+except Exception as e:
+	prt("Failed to run bot_live()!")
+	prt(f"Catching error: {e}")
+
+@bot.message_handler(content_types='text')
+def common(message):
+	if message.text == None:
+		print(red_text("message.text == None"))
+		return
+	if len(message.text) > 100:
+		bot.send_message(message.chat.id, "Слишком длинное сообщение!")
+		return
+	# bot.send_message(message.chat.id, f"Сам {message.text}")
+	# show help here)
+
+	bot.send_message(message.chat.id, f"Ваш логин: {message.chat.id}")
+
+
+
+
+
+
+
+
+
+
+if not users:
+	print("")
+	lg = input("Enter login:")
+	users.append(lg)
+
+
+
+
 
 bot_running = True
 while bot_running:
@@ -133,48 +190,31 @@ while bot_running:
 	# connecting
 	# rc = req('ns')
 
-	if not data:
-		data = "no data"
+	# if not data:
+	# 	data = "no data"
 
 	if data:
 		for login in users:
 			try:
-				passwd = users[login]
-
-				rx = req(f'ns {RSA_KEY_LENGTH}')
-				sc.set_key_len(RSA_KEY_LENGTH)
-
-				rx_data = LData(rx)
-				session_id = rx_data.get(0)
-				pubkey = rx_data.get(1)
-
-				iv = sc.new_iv()
-				sha256 = sc.sha256(passwd)
-				# tx_data = f"{login} {iv} {sha256} {station_data['id']} {station_name}"
-				tx_data = f"{login} {iv} {sha256} {MAC} {station_name}"
-				tx = sc.rsa_encrypt(tx_data, pubkey)
-
-				rx_en = req(f"{session_id} {tx}")
-
-				rx = sc.decrypt(rx_en, sha256, iv)
-				rx_data = LData(rx)
-				if rx_data.get(0) == "success":
-					# send data
-					prt(green_text(f"Authentication was successful ({login})!"))
-					tx = sc.encrypt(f"{station_name}: \n{data}", sha256, rx_en[-32:])
-					iv = tx[-32:]
-
-					rx_en = req(f"{session_id} {tx}")
-
-					rx = sc.decrypt(rx_en, sha256, iv)
-					if rx == "ok":
-						prt(green_text(f"Data sended ({login})!\n"))
-						# good, data sended
+				if len(data) < 4096:
+					print("send all")
+					bot.send_message(login, data)
 				else:
-					prt(red_text(f"Authentication failed ({login})!"))
+					print("send by parts")
+					while len(data) > 0:
+						print("len data:", len(data))
+						x = 4090
+						ind = data[:x].rfind('\n')
+						if len(data) > 4090 and ind >= 0:
+							x = ind
+						tx = data[:x]
+						data = data[x:]
+						bot.send_message(login, tx)
 			except Exception as e:
-				prt(f"Failed send data for user {login}!")
-				prt(f"Error: {e}")
+				print(f"Error: {e}")
+	else:
+		print("No data!")
+				
 
 	
 
