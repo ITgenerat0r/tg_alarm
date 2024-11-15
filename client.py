@@ -27,7 +27,7 @@ station_name = "default"
 
 # HOST = '192.168.0.161'
 HOST = '192.168.0.161'
-PORT = 11201  
+PORT = 24115 
 DELAY_MAIN = 60
 MAX_DELAY_MAIN = 60
 RSA_KEY_LENGTH = 2048
@@ -66,7 +66,7 @@ for i in argv:
 		elif last_arg == "-ip":
 			HOST = i
 		elif last_arg == "-port":
-			PORT = i
+			PORT = int(i)
 		elif last_arg == "-name":
 			station_name = i
 

@@ -75,7 +75,7 @@ for i in argv:
 		elif last_arg == "-ip":
 			HOST = i
 		elif last_arg == "-port":
-			PORT = i
+			PORT = int(i)
 		elif last_arg == "-name":
 			station_name = i
 		elif last_arg == "-token":

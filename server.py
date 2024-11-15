@@ -20,7 +20,7 @@ from MDataBase import Alarm_database
 version = "1.4"
 
 HOST = '0.0.0.0'  # Standard loopback interface address (localhost)
-PORT = 11201	  # Port to listen on (non-privileged ports are > 1023)
+PORT = 24115	  # Port to listen on (non-privileged ports are > 1023)
 
 RSA_KEY_LENGTH = 2048
 
@@ -57,7 +57,7 @@ for i in argv:
 			sys.exit()
 	else:
 		if last_arg == "-port":
-			PORT = i
+			PORT = int(i)
 		elif last_arg == "-rsa-length":
 			try:
 				if int(i) in {2048, 3072, 4096}:
