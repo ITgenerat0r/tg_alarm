@@ -7,6 +7,7 @@ from security import Security
 class Controller():
 	"""docstring for Controller"""
 	def __init__(self, connection, logs = False):
+		self.__version = "2.0"
 		self.__connection = connection
 		self.__logs = logs
 		self.__package_size = 1024
@@ -14,7 +15,7 @@ class Controller():
 		self.__cipher = Security(self.__logs)
 		self.__encryption = False
 		self.__iv = ""
-		self.__aes_key = "develop"
+		self.__aes_key = self.__cipher.sha256("develop")
 
 	def enable_encryption(self, stat=True):
 		self.__encryption = stat
@@ -29,8 +30,6 @@ class Controller():
 
 	def get_new_iv(self):
 		return self.__cipher.new_iv()
-
-	
 
 
 
@@ -50,13 +49,13 @@ class Controller():
 	def send(self, text):
 		# self.__prt(f"send({text})")
 		# text = self.__cipher.encrypt(text_clear)
-		self.__prt(yellow_text(f"=>"))
 		if self.__encryption:
 			text = self.encrypt(text)
 			self.__iv = text[-32:]
+		self.__prt()
 		while len(text) > self.__package_size - self.__code_size:
-			self.__send_bit(f"b_{text[:self.__code_size]}")
-			text = text[self.__code_size:]
+			self.__send_bit(f"b_{text[:self.__package_size - self.__code_size]}")
+			text = text[self.__package_size - self.__code_size:]
 			self.__recv_bit()
 		else:
 			self.__send_bit(f"e_{text}")
@@ -75,9 +74,7 @@ class Controller():
 				break
 		# self.__prt(f"recv() = {res}")
 		if self.__encryption:
-			self.__prt(yellow_text(f"<="))
 			return self.decrypt(res)
-		self.__prt(yellow_text(f"<="))
 		return res
 
 	def decrypt(self, data):
@@ -85,16 +82,5 @@ class Controller():
 
 	def encrypt(self, data):
 		return self.__cipher.encrypt(data, self.__aes_key, self.__iv)
-
-
-	# it's returned: privKey, pubKey
-	# def get_new_ecc_keys(self):
-	# 	return self.__cipher.generate_ecies_key()
-
-	# def ecc_decrypt(self, key, data):
-	# 	return self.__cipher.ecies_decrypt(key, data)
-
-	# def ecc_encrypt(self, key, data):
-	# 	return self.__cipher.ecies_encrypt(key, data)
 
 
