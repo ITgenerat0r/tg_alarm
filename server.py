@@ -153,7 +153,10 @@ def handler(conn, addr):
 				sha256 = rx_data.get(2)
 				mac = rx_data.get(3)
 				nm = rx_data.get(4)
-				db.set_online(mac, nm)
+				rx = db.set_online(mac, nm)
+				if rx == 1:
+					# new connection
+					bot.send_message(login, f"Client [{mac}]({nm}) connected!")
 				res = "failed"
 				if db.login(login, sha256):
 					# ok
