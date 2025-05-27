@@ -1,0 +1,1 @@
+pyinstaller --onefile --icon="C:/Logo/Png/Logo 3.png" --name single.exe alarm.py

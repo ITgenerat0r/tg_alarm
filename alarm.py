@@ -20,7 +20,7 @@ import telebot
 from uuid import getnode as get_mac
 
 help_data = "client.exe -token <bot_token> -u <login1> <login2>\n\
- Additional: -name <name(who sended data)> -f <input_file>"
+ Additional: -name <name(who sended data)> -f <input_file> -d <delay(sec)>"
 
 # users = {}
 users = []
@@ -40,7 +40,7 @@ MAX_DELAY_MAIN = 60
 RSA_KEY_LENGTH = 2048
 MAC = hex(get_mac())[2:]
 
-VERSION = "1.6"
+VERSION = "1.7"
 
 logs = True
 
@@ -80,6 +80,8 @@ for i in argv:
 			station_name = i
 		elif last_arg == "-token":
 			token = i
+		elif last_arg == "-d":
+			DELAY_MAIN = i
 
 
 if not token:
