@@ -183,9 +183,13 @@ def common(message):
 
 
 if not users:
-	print("")
-	lg = input("Enter login:")
-	users.append(lg)
+	while True:
+		print("")
+		lg = input("Enter login:")
+		if lg:
+			users.append(lg)
+		else:
+			break
 
 
 
