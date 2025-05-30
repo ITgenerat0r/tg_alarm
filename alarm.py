@@ -4,23 +4,23 @@ import os
 import sys
 from sys import argv
 from time import sleep
+# from daemon import *
+# import subprocess
+import getpass
+from thread import Threads
+import telebot
+from uuid import getnode as get_mac
+
+
+
 from includes import *
 from data_split_class import LData
 from controller import Controller
 from security import Security
 from parser_class import Parser
-# from daemon import *
-# import subprocess
-import getpass
-
-
-from thread import Threads
-import telebot
-
-from uuid import getnode as get_mac
 
 help_data = "client.exe -token <bot_token> -u <login1> <login2>\n\
- Additional: -name <name(who sended data)> -f <input_file> -d <delay(sec)>"
+ Additional: -name <name(who sended data)> -f <input_file> -d <delay(sec)> -pass <password>"
 
 # users = {}
 users = []
@@ -40,12 +40,15 @@ MAX_DELAY_MAIN = 60
 RSA_KEY_LENGTH = 2048
 MAC = hex(get_mac())[2:]
 
-VERSION = "1.7"
+VERSION = "1.8"
 
 logs = True
 
 old_host = HOST
 old_port = PORT
+
+PASS = None
+
 
 current_path = os.path.dirname(os.path.abspath(__file__))
 
@@ -82,6 +85,8 @@ for i in argv:
 			token = i
 		elif last_arg == "-d":
 			DELAY_MAIN = i
+		elif last_arg == "-pass":
+			PASS = i
 
 
 if not token:
@@ -161,6 +166,9 @@ def common(message):
 	# show help here)
 
 	bot.send_message(message.chat.id, f"Ваш логин: {message.chat.id}")
+	if PASS != None and message.text == PASS:
+		if not message.chat.id in users:
+			users.append(message.chat.id)
 
 
 
@@ -213,7 +221,7 @@ while bot_running:
 						data = data[x:]
 						bot.send_message(login, tx)
 			except Exception as e:
-				print(f"Error: {e}")
+				print(f"Error: {str(e)}")
 	else:
 		print("No data!")
 				
@@ -222,6 +230,7 @@ while bot_running:
 
 	data = ""
 
+	print(f"Delay {DELAY_MAIN} sec.")
 	sleep(DELAY_MAIN)
 	# bot_running = False # dev, remove for release
 
