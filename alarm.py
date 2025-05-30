@@ -84,7 +84,10 @@ for i in argv:
 		elif last_arg == "-token":
 			token = i
 		elif last_arg == "-d":
-			DELAY_MAIN = i
+			try:
+				DELAY_MAIN = int(i)
+			except Exception as e:
+				print(f"Erorr when set delay: {e}")
 		elif last_arg == "-pass":
 			PASS = i
 
@@ -221,7 +224,7 @@ while bot_running:
 						data = data[x:]
 						bot.send_message(login, tx)
 			except Exception as e:
-				print(f"Error: {str(e)}")
+				print(f"Error: {e}")
 	else:
 		print("No data!")
 				
