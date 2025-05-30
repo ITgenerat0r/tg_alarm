@@ -207,8 +207,11 @@ while bot_running:
 	# 	data = "no data"
 
 	if data:
+		print(f"Users:")
+		print(users)
 		for login in users:
 			try:
+				print(f"Sending to {login}...")
 				if len(data) < 4096:
 					print("send all")
 					bot.send_message(login, data)
@@ -223,6 +226,7 @@ while bot_running:
 						tx = data[:x]
 						data = data[x:]
 						bot.send_message(login, tx)
+				print(f"Sended to {login}!\n")
 			except Exception as e:
 				print(f"Error: {e}")
 	else:
