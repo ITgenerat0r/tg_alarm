@@ -15,6 +15,8 @@ class Parser():
 		self.__last_year = "0"
 		self.__last_time = "0:00:00"
 
+		self.__warning_keys = ["Предупреждение"]
+
 	def __prt(self, text):
 		if self.__logs:
 			print(text)
@@ -91,22 +93,27 @@ class Parser():
 			if self.__last_warning == "" or self.__last_warning == line:
 				key = False
 				self.__save_last_warning(line)
+				# print(f"Last warning saved...")
 				continue
 			if key or line == "":
+				# print(f"key or line=''")
 				continue
-			# print("check")
+			# print("Checking")
 			self.__last_warning = line
-			if line.find("Предупреждение:") >= 0:
-				res += line + "\n"
-				# print("add")
-				# ind = line.find(" : ")
-				# if ind > 0:
-				# 	time = line[:ind].strip()
-				# 	text = line[ind+3:].strip()
-				# 	# print(f"|{time}|{text}|")
-				# 	res.append(f"{time} : {text}")
-				# else:
-				# 	self.__prt("Wrong line!")
+			for warning_key in self.__warning_keys:
+				# print(f"   {warning_key}")
+				if line.find(warning_key) >= 0:
+					# print(f"Append line: {line}")
+					res += line + "\n"
+					# print("add")
+					# ind = line.find(" : ")
+					# if ind > 0:
+					# 	time = line[:ind].strip()
+					# 	text = line[ind+3:].strip()
+					# 	# print(f"|{time}|{text}|")
+					# 	res.append(f"{time} : {text}")
+					# else:
+					# 	self.__prt("Wrong line!")
 		if key:
 			self.__last_warning = ""
 		f.close()

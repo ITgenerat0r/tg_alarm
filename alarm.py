@@ -225,7 +225,7 @@ while bot_running:
 						print("len data:", len(data))
 						x = 4090
 						ind = data[:x].rfind('\n')
-						if len(data) > 4090 and ind >= 0:
+						if len(data) > 4090 and ind > 0:
 							x = ind
 						tx = data[:x]
 						data = data[x:]
