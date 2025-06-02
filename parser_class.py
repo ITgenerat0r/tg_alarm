@@ -81,6 +81,21 @@ class Parser():
 			self.__last_warning = ""
 			return ""
 
+	def load_warning_keys(self, filename):
+		try:
+			f = open(filename, 'r')
+			data = f.read()
+			f.close()
+			self.__warning_keys = []
+			for row in data.split():
+				self.__warning_keys.append(row)
+		except Exception as e:
+			self.__prt(f"Can't load warning keys from file {filename}.\n Error: {e}")
+		# print(self.__warning_keys)
+
+	def add_warning_key(self, key):
+		if not key in self.__warning_keys:
+			self.__warning_keys.append(key)
 
 	def parse_file(self, filename, enc="1251"):
 		# res = []

@@ -39,8 +39,9 @@ DELAY_MAIN = 60
 MAX_DELAY_MAIN = 60
 RSA_KEY_LENGTH = 2048
 MAC = hex(get_mac())[2:]
+WARNING_KEYS_FILENAME = "keys.txt"
 
-VERSION = "1.8"
+VERSION = "1.9"
 
 logs = True
 
@@ -127,6 +128,7 @@ last_rc = ""
 bot = telebot.TeleBot(token)
 sc = Security(True)
 p = Parser()
+p.load_warning_keys(WARNING_KEYS_FILENAME)
 station_data = p.parse_config(config_filename)
 data = f"Started at {get_time()}(local time)\n"
 try:
