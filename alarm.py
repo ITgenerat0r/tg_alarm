@@ -39,6 +39,7 @@ DELAY_MAIN = 60
 MAX_DELAY_MAIN = 60
 RSA_KEY_LENGTH = 2048
 MAC = hex(get_mac())[2:]
+MAIN_CONFIG_FILENAME = "conf.txt"
 WARNING_KEYS_FILENAME = "keys.txt"
 
 VERSION = "1.9"
@@ -91,6 +92,11 @@ for i in argv:
 				print(f"Erorr when set delay: {e}")
 		elif last_arg == "-pass":
 			PASS = i
+		elif last_arg == "-config":
+			MAIN_CONFIG_FILENAME = i
+
+
+
 
 
 if not token:

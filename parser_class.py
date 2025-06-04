@@ -185,6 +185,31 @@ class Parser():
 
 
 
+	def parse_custom_item(self, item):
+		k, v = "", ""
+		return k, v
+
+
+	def read_custom_config(self, filename):
+		data = {}
+		try:
+			f = open(filename, 'r')
+			raw_data = f.read()
+			f.close()
+			for item in raw_data.split(';'):
+				k, v = self.parse_custom_item(item.strip())
+				if k and v:
+					data[k] = v
+
+		except Exception as e:
+			print(f"Error while parse custom file: {filename}.\n{e}")
+		return data
+
+
+
+
+
+
 
 
 
