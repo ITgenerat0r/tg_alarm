@@ -187,6 +187,16 @@ class Parser():
 
 	def parse_custom_item(self, item):
 		k, v = "", ""
+		ind = item.find('=')
+		if ind > 0:
+			k = item[:ind]
+			data = item[ind+1:].split(',')
+			if len(data) > 1:
+				v = []
+				for i in data:
+					v.append(i)
+			elif len(data) == 1:
+				v = data
 		return k, v
 
 
