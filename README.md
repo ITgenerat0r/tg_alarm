@@ -1,5 +1,6 @@
 
-Hello! This script tracks your file. When the key text appears there, he will send this string to the recipients using a Telegram bot. (It can be adapted to any event.)
+<h1 align="center">Hi there, I'm ITgenerat0r.</h1>
+This script tracks your file. When the key text appears there, he will send this string to the recipients using a Telegram bot. (It can be adapted to any event.)
 
 
 You can set the keys in the file keys.txt. Use an space or end line as a separator.
