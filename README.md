@@ -4,6 +4,8 @@ This script tracks your file. When the key text appears there, he will send this
 
 You can set the keys in the file keys.txt. Use an space or end line as a separator.
 
+Before you start, you should create your own Telegram bot and get a token. Start the server.py or a single.py file, then go to the bot and get your username and password there (command: /start).
+
 There are two configurations:
 
 **1. Split**
