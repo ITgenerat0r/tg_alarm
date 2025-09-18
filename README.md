@@ -13,13 +13,13 @@ The server receives data from the client and sends it using a Telegram bot. The 
 
 **Run server:**
 ```terminal
-server.exe -port "IP_PORT_FOR_LISTENING" -token <YOUR_TELEGRAM_BOT_TOKEN> -dbhost <DATABASE_IP (recommend: 127.0.0.1)> -dbuser <DATABASE_USERLOGIN> -dbpass <DATABASE_USERPASSWORD> -dbname <YOUR_DATABASE_NAME> -admins <id admins(splitter: space)>
+python full_server.py -port "IP_PORT_FOR_LISTENING" -token <YOUR_TELEGRAM_BOT_TOKEN> -dbhost <DATABASE_IP (recommend: 127.0.0.1)> -dbuser <DATABASE_USERLOGIN> -dbpass <DATABASE_USERPASSWORD> -dbname <YOUR_DATABASE_NAME> -admins <id admins(splitter: space)>
 ```
 
 
 **Run client:** 
 ```terminal
-<a>client.exe -u <LOGIN> -name <NAME(who sended data, or some key text)> -f <INPUT_FILE> -ip <SERVER_IP> -port <SERVER_PORT></a>
+<a>python client.py -u <LOGIN> -name <NAME(who sended data, or some key text)> -f <INPUT_FILE> -ip <SERVER_IP> -port <SERVER_PORT></a>
 ```
 
 
@@ -29,9 +29,11 @@ You run a single file on your computer in which you need to track any event. It'
 
 **Run single:**
 ```terminal
-	single.exe -token <YOUR_TELEGRAM_BOT_TOKEN> -u <RECEIVER_LOGIN_1> <RECEIVER_LOGIN_2> <...>
+	python alarm.py -token <YOUR_TELEGRAM_BOT_TOKEN> -u <RECEIVER_LOGIN_1> <RECEIVER_LOGIN_2> <...>
 ```
 Additional options:
 ```terminal
   -name <NAME(who sended data, or some key text)> -f <INPUT_FILE> -d <DELAY (delay between checks file data, in seconds)>
 ```
+
+You can also compile the files to single.exe and run it on a clean OS.
